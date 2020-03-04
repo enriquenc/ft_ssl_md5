@@ -25,3 +25,16 @@
 // typedef struct s_md5 {
 // 	uint8_t buf[]
 // } t_md5;
+
+typedef struct s_md5_result_vector {
+	uint32_t a;
+	uint32_t b;
+	uint32_t c;
+	uint32_t d;
+} t_md5_result_vector;
+
+typedef struct s_md5_cycle_variables {
+	uint8_t i;
+	uint32_t f;
+	uint32_t g;
+} t_md5_cycle_variables;

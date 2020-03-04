@@ -1,7 +1,7 @@
 #pragma once
 #include "libft.h"
 
-#define MAX_BUFFER_SIZE 1024
+#define MAX_BUFFER_SIZE 2048
 
 
 typedef __uint8_t uint8_t;

@@ -43,18 +43,52 @@ static uint32_t TABLE[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
-void md5_message_padding_append(t_ssl *message_data) {
+void md5_message_padding_append(t_ssl *message_data)
+{
+	message_data->message_len = ft_strlen((const char *)message_data->message);
 	message_data->padding_len = 0; /* count of symbols to add */
 	while ((++message_data->padding_len + message_data->message_len) % DIV_BYTES != NEEDED_MODULO_BYTES);
 	ft_memcpy(message_data->message + message_data->message_len, PADDING, message_data->padding_len);
 }
 
-void md5_message_length_append(t_ssl *message_data) {
+void md5_message_length_append(t_ssl *message_data)
+{
 	uint64_t bits_len = 8 * message_data->message_len;
 	memcpy(message_data->message + message_data->message_len + message_data->padding_len, &bits_len, 8);
+	message_data->full_message_len_bytes = message_data->message_len + message_data->padding_len + 8;
 }
 
-uint32_t *md5_get_current_chunk(t_ssl *message_data) {
+t_md5_result_vector md5_cycle_calculation(uint32_t *chunk, t_md5_result_vector calc_vector)
+{
+	t_md5_cycle_variables var;
+
+	var.i = 0;
+	while (var.i < 64) {
+		if (var.i < 16) {
+			var.f = F(calc_vector.b, calc_vector.c, calc_vector.d);
+			var.g = var.i;
+		} else if (var.i < 32) {
+			var.f = G(calc_vector.b, calc_vector.c, calc_vector.d);
+			var.g = (5 * var.i + 1) % 16;
+		} else if (var.i < 48) {
+			var.f = H(calc_vector.b, calc_vector.c, calc_vector.d);
+			var.g = (3 * var.i + 5) % 16;
+		} else if (var.i < 64) {
+			var.f = I(calc_vector.b, calc_vector.c, calc_vector.d);
+			var.g = (7 * var.i) % 16;
+		}
+		var.f = var.f + calc_vector.a + TABLE[var.i] + *(chunk + var.g);
+		calc_vector.a = calc_vector.d;
+		calc_vector.d = calc_vector.c;
+		calc_vector.c = calc_vector.b;
+		calc_vector.b = calc_vector.b + LEFT_ROTATE(var.f, s[var.i]);
+		var.i++;
+	}
+	return calc_vector;
+}
+
+uint32_t *md5_get_current_chunk(t_ssl *message_data)
+{
 	static uint8_t current_chunk;
 
 	if (current_chunk >= message_data->full_message_len_bytes / CHUNK_LEN_BYTES)
@@ -66,74 +100,54 @@ uint32_t *md5_get_current_chunk(t_ssl *message_data) {
 	return chunk;
 }
 
-size_t md5(t_ssl *message_data) {
-	//char buf[MAX_BUFFER_SIZE];
+t_md5_result_vector md5_vector_init_default (t_md5_result_vector dest)
+{
+	dest.a = A_INIT_VALUE;
+	dest.b = B_INIT_VALUE;
+	dest.c = C_INIT_VALUE;
+	dest.d = D_INIT_VALUE;
+	return (dest);
+}
 
-	// size_t arg_len = 0;
-	// if (*(argv + 1))
-	// 	arg_len = ft_strlen(*(argv + 1));
+t_md5_result_vector md5_vector_copy(t_md5_result_vector dest, t_md5_result_vector src)
+{
+	dest.a = src.a;
+	dest.b = src.b;
+	dest.c = src.c;
+	dest.d = src.d;
+	return (dest);
+}
 
-	//int len = ft_atoi((const char *)message_data->message);
-	message_data->message_len = ft_strlen((const char *)message_data->message);
-	// for (size_t i = 0; i < message_data->message_len; i++)
-	// 	ft_printf("%d", (unsigned)message_data->message[i]);
-	// ft_putchar('\n');
-	md5_message_padding_append(message_data);
-	md5_message_length_append(message_data);
-	// for (size_t i = 0; i < message_data->message_len + message_data->padding_len + 8; i++)
-	// 	ft_printf("%d", (unsigned)message_data->message[i]);
-	// ft_putchar('\n');
+t_md5_result_vector md5_vector_add(t_md5_result_vector dest, t_md5_result_vector src)
+{
+	dest.a += src.a;
+	dest.b += src.b;
+	dest.c += src.c;
+	dest.d += src.d;
+	return (dest);
+}
 
-	uint32_t a0 = A_INIT_VALUE;
-	uint32_t b0 = B_INIT_VALUE;
-	uint32_t c0 = C_INIT_VALUE;
-	uint32_t d0 = D_INIT_VALUE;
-	//(len);
-	message_data->full_message_len_bytes = message_data->message_len + message_data->padding_len + 8;
-	// ft_printf("%d", message_data->full_message_len_bytes);
-	// uint8_t chunk_number = 0;
+size_t md5(t_ssl *message_data)
+{
+	t_md5_result_vector result_vector;
+	t_md5_result_vector calc_vector;
 	uint32_t *chunk = NULL;
 
+	md5_message_padding_append(message_data);
+	md5_message_length_append(message_data);
+
+	result_vector = md5_vector_init_default(result_vector);
+
 	while ((chunk = md5_get_current_chunk(message_data))) {
-		uint32_t A = a0;
-		uint32_t B = b0;
-		uint32_t C = c0;
-		uint32_t D = d0;
-
-		int i = 0;
-		while (i < 64) {
-			uint32_t f, g;
-			if (i < 16) {
-				f = F(B, C, D);
-				g = i;
-			} else if (i < 32) {
-				f = G(B, C, D);
-				g = (5 * i + 1) % 16;
-			} else if (i < 48) {
-				f = H(B, C, D);
-				g = (3 * i + 5) % 16;
-			} else if (i < 64) {
-				f = I(B, C, D);
-				g = (7 * i) % 16;
-			}
-			f = f + A + TABLE[i] + *(chunk + g);
-			A = D;
-			D = C;
-			C = B;
-			B = B + LEFT_ROTATE(f, s[i]);
-			i++;
-		}
-		a0 += A;
-		b0 += B;
-		c0 += C;
-		d0 += D;
+		calc_vector = md5_vector_copy(calc_vector, result_vector);
+		calc_vector = md5_cycle_calculation(chunk, calc_vector);
+		result_vector = md5_vector_add(result_vector, calc_vector);
 	}
+	// getting result to byte array
 	uint8_t result[16];
-	ft_memcpy(result, &a0, 4);
-	ft_memcpy(result + 4, &b0, 4);
-	ft_memcpy(result + 8, &c0, 4);
-	ft_memcpy(result + 12, &d0, 4);
+	ft_memcpy(result, &result_vector, 16);
 
+	// format hex output of result
 	for (int i = 0; i < 16; i++) {
 		ft_printf("%02x", result[i]);
 	}
