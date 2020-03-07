@@ -43,6 +43,8 @@ static uint32_t TABLE[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
+static uint32_t current_chunk;
+
 void md5_message_padding_append(t_ssl *message_data)
 {
 	message_data->message_len = ft_strlen((const char *)message_data->message);
@@ -89,8 +91,6 @@ t_md5_result_vector md5_cycle_calculation(uint32_t *chunk, t_md5_result_vector c
 
 uint32_t *md5_get_current_chunk(t_ssl *message_data)
 {
-	static uint8_t current_chunk;
-
 	if (current_chunk >= message_data->full_message_len_bytes / CHUNK_LEN_BYTES)
 		return NULL;
 
@@ -106,6 +106,8 @@ t_md5_result_vector md5_vector_init_default (t_md5_result_vector dest)
 	dest.b = B_INIT_VALUE;
 	dest.c = C_INIT_VALUE;
 	dest.d = D_INIT_VALUE;
+
+	current_chunk = 0;
 	return (dest);
 }
 
@@ -137,7 +139,6 @@ size_t md5(t_ssl *message_data)
 	md5_message_length_append(message_data);
 
 	result_vector = md5_vector_init_default(result_vector);
-
 	while ((chunk = md5_get_current_chunk(message_data))) {
 		calc_vector = md5_vector_copy(calc_vector, result_vector);
 		calc_vector = md5_cycle_calculation(chunk, calc_vector);
@@ -146,11 +147,9 @@ size_t md5(t_ssl *message_data)
 	// getting result to byte array
 	uint8_t result[16];
 	ft_memcpy(result, &result_vector, 16);
-
 	// format hex output of result
 	for (int i = 0; i < 16; i++) {
 		ft_printf("%02x", result[i]);
 	}
-	ft_putchar('\n');
 	return 0;
 }
