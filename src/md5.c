@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 15:23:07 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 20:23:49 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static uint8_t g_s[64] = {
 ** (len_in_bits(message) % 512 == 488)
 */
 
-static uint8_t g_padding[64] = {
+uint8_t g_padding[64] = {
 	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -57,8 +57,6 @@ static uint32_t g_table[64] = {
 	0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
-
-static uint32_t g_current_chunk;
 
 void				md5_message_padding_append(t_ssl *message_data)
 {
@@ -105,32 +103,40 @@ uint32_t			*md5_get_current_chunk(t_ssl *message_data)
 {
 	uint32_t *chunk;
 
-	if (g_current_chunk >= message_data->full_message_len_bytes
+	if (message_data->current_chunk >= message_data->full_message_len_bytes
 											/ CHUNK_LEN_BYTES)
 		return (NULL);
 	chunk = (uint32_t *)(message_data->message +
-						(g_current_chunk * CHUNK_LEN_BYTES));
-	g_current_chunk++;
+						(message_data->current_chunk * CHUNK_LEN_BYTES));
+	message_data->current_chunk++;
 	return (chunk);
 }
 
-size_t				md5(t_ssl *message_data)
+void			init_ssl_structure(t_ssl *message_data, uint8_t *message)
+{
+	message_data->current_chunk = 0;
+	message_data->chunk = NULL;
+	ft_memcpy(message_data->message, message, strlen((const char *)message) + 1);
+}
+
+size_t				md5(uint8_t *message)
 {
 	t_md5_result_vector	result_vector;
 	t_md5_result_vector	calc_vector;
-	uint32_t			*chunk;
+	t_ssl				message_data;
 	uint8_t				result[16];
 	int					i;
 
-	md5_message_padding_append(message_data);
-	md5_message_length_append(message_data);
+	ft_printf("md5\n");
+	init_ssl_structure(&message_data, message);
+	ft_printf("structure inited\n");
+	md5_message_padding_append(&message_data);
+	md5_message_length_append(&message_data);
 	result_vector = md5_vector_init_default();
-	chunk = NULL;
-	g_current_chunk = 0;
-	while ((chunk = md5_get_current_chunk(message_data)))
+	while ((message_data.chunk = md5_get_current_chunk(&message_data)))
 	{
 		calc_vector = md5_vector_copy(calc_vector, result_vector);
-		calc_vector = md5_cycle_calculation(chunk, calc_vector);
+		calc_vector = md5_cycle_calculation(message_data.chunk, calc_vector);
 		result_vector = md5_vector_add(result_vector, calc_vector);
 	}
 	ft_memcpy(result, &result_vector, 16);

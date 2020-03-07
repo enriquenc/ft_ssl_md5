@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:45 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 15:57:34 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 19:51:35 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ typedef struct	s_algorithms {
 	t_hash_algorithm	alg;
 }				t_algorithms;
 
-size_t			md5(t_ssl *message_data);
+size_t			md5(uint8_t *message);
 void			connector(t_parser_data *message_data);
 void			ft_ssl_error(t_error code, void *arg);
-size_t			sha256(t_ssl *message_data);
+size_t			sha256(uint8_t *message);
 t_parser_data	parser(int argc, char **argv);
 
 #endif

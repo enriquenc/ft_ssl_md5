@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:49 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 15:56:23 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 19:53:44 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ typedef enum	e_hash_algorithm {
 
 typedef struct	s_ssl {
 	uint8_t		message[MAX_BUFFER_SIZE];
+	uint32_t	current_chunk;
+	uint32_t	*chunk;
 	size_t		message_len;
 	size_t		padding_len;
 	size_t		full_message_len_bytes;
@@ -44,6 +46,6 @@ typedef struct	s_parser_data {
 	char				*files_data[MAX_FILE_ARGUMENT_COUNT];
 }				t_parser_data;
 
-typedef size_t	(*t_hash_func)(t_ssl *message_data);
+typedef size_t	(*t_hash_func)(uint8_t *message);
 
 #endif

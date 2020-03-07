@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 14:57:14 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 18:39:10 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,16 +73,16 @@ void				parser_all_args_get(t_parser_data *parsed_data,
 
 	i = -1;
 	s_count = 0;
-	while (i++ < argc)
+	while (++i < argc)
 	{
-		if (*(argv + i)[0] == '-')
+		if (argv[i][0] == '-')
 		{
 			parser_options(parsed_data, *(argv + i));
-			if (*(argv + i)[1] == 's')
+			if (argv[i][1] == 's')
 			{
 				i++;
 				if (i < argc)
-					parsed_data->s_option_data[s_count] = *(argv + i);
+					parsed_data->s_option_data[s_count] = argv[i];
 				else
 					ft_ssl_error(EXPECTED_ARGUMENT, NULL);
 				s_count++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmaslyan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/03 16:16:18 by tmaslyan          #+#    #+#             */
-/*   Updated: 2018/04/12 19:50:29 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 21:24:36 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static int		check_buf(t_bufer **list, char **line, char *buf, int fd)
 		if (add_to_line(list, line, buf))
 			break ;
 	}
-	if (!read_bytes && !(*line))
+	if (!read_bytes || !(*line))
 		return (0);
 	return (1);
 }
@@ -123,13 +123,7 @@ int				get_next_line(const int fd, char **line)
 		free(buf);
 		return (1);
 	}
-	if ((check = check_buf(&list, line, buf, fd)) == -1)
-	{
-		free(buf);
-		return (-1);
-	}
+	check = check_buf(&list, line, buf, fd);
 	free(buf);
-	if (check == 1)
-		return (1);
-	return (0);
+	return (check);
 }

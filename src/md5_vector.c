@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:37:28 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 15:19:22 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 19:19:50 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 t_md5_result_vector	md5_vector_init_default(void)
 {
-	t_md5_result_vector dest;
+	t_md5_result_vector init;
 
-	dest.a = A_INIT_VALUE;
-	dest.b = B_INIT_VALUE;
-	dest.c = C_INIT_VALUE;
-	dest.d = D_INIT_VALUE;
-	return (dest);
+	init.a = A_INIT_VALUE;
+	init.b = B_INIT_VALUE;
+	init.c = C_INIT_VALUE;
+	init.d = D_INIT_VALUE;
+	return (init);
 }
 
 t_md5_result_vector	md5_vector_copy(t_md5_result_vector dest,

@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:34:40 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 16:05:14 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 21:28:29 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,16 @@ void		read_from_descriptor(uint8_t *dest, int fd)
 	char	*line;
 
 	size = 0;
-	while (get_next_line(fd, &line) && line)
+	int er;
+	while ((er = get_next_line(fd, &line)) && line)
 	{
 		ft_memcpy(dest + size, line, strlen(line));
 		size += strlen(line);
 		ft_memcpy(dest + size, "\n", 1);
 		size++;
 	}
+	if (line)
+		ft_memcpy(dest + size, line, strlen(line));
 }
 
 uint8_t		get_file_content(uint8_t *dest, char *file_name)
@@ -68,15 +71,16 @@ const char	*get_algorithm_str(t_hash_algorithm alg)
 			}
 			return (g_algorithms[i].name);
 		}
+		i++;
 	}
 	return ("(NULL)");
 }
 
 void		connector(t_parser_data *parsed_data)
 {
-	t_ssl message_data;
 	char **string_array;
 	char **files_array;
+	uint8_t buf[MAX_BUFFER_SIZE];
 	int i;
 
 	i = 0;
@@ -86,19 +90,20 @@ void		connector(t_parser_data *parsed_data)
 	if ((string_array[0] == NULL && files_array[0] == NULL) ||
 									parsed_data->options & FLAG_P)
 	{
-		read_from_descriptor(message_data.message, 0);
+		read_from_descriptor(buf, 0);
 		if (!(parsed_data->options & FLAG_Q) && parsed_data->options & FLAG_P)
-			ft_printf("%s", message_data.message);
-		g_all[parsed_data->algorithm].func(&message_data);
+			ft_printf("%s", buf);
+		g_all[parsed_data->algorithm].func(buf);
 		ft_putchar('\n');
 	}
 
 	while (string_array[i])
 	{
+
 		if (!(parsed_data->options & FLAG_Q) && !(parsed_data->options & FLAG_R))
 			ft_printf("%s (\"%s\") = ", get_algorithm_str(parsed_data->algorithm), string_array[i]);
-		ft_memcpy(message_data.message, string_array[i], strlen(string_array[i]) + 1);
-		g_all[parsed_data->algorithm].func(&message_data);
+
+		g_all[parsed_data->algorithm].func((uint8_t *)string_array[i]);
 		if (!(parsed_data->options & FLAG_Q) && parsed_data->options & FLAG_R)
 			ft_printf(" \"%s\"", string_array[i]);
 		i++;
@@ -108,11 +113,11 @@ void		connector(t_parser_data *parsed_data)
 	i = 0;
 	while (files_array[i])
 	{
-		if (get_file_content(message_data.message, files_array[i]))
+		if (get_file_content(buf, files_array[i]))
 		{
 			if (!(parsed_data->options & FLAG_Q) && !(parsed_data->options & FLAG_R))
 				ft_printf("%s (%s) = \n", get_algorithm_str(parsed_data->algorithm), files_array[i]);
-			g_all[parsed_data->algorithm].func(&message_data);
+			g_all[parsed_data->algorithm].func(buf);
 			if (!(parsed_data->options & FLAG_Q) && parsed_data->options & FLAG_R)
 				ft_printf(" %s\n", files_array[i]);
 		}
