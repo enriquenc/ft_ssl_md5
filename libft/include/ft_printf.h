@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tmaslyan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 15:21:05 by tmaslyan          #+#    #+#             */
-/*   Updated: 2018/04/16 15:21:07 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 16:01:41 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,6 @@
 # include <unistd.h>
 # include <stdarg.h>
 # include "libft.h"
-
-
-#ifdef __linux__
-#define intmax_t __intmax_t
-#define uintmax_t __uintmax_t
-#endif
 
 typedef struct	s_flags
 {

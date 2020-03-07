@@ -1,6 +1,6 @@
 NAME = ft_ssl
 
-SRCNAME	= md5.c connector.c main.c ft_ssl_error_handler.c sha256.c
+SRCNAME	= md5.c connector.c main.c ft_ssl_error_handler.c sha256.c md5_vector.c parser.c
 
 SRC = $(addprefix src/, $(SRCNAME))
 OBJECT = $(SRC:.c=.o)

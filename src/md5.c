@@ -1,30 +1,45 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   md5.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
+/*   Updated: 2020/03/07 15:23:07 by tmaslyan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <md5.h>
 
-static uint8_t s[64] = {7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
-5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
-4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
-6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21 };
-
-
-/* Array used to append padding to the message,
-* Starts from 1 bit (ASCII 128(dec) / 0x80(hex)) and ends
-* by n 0 bits according to the message:
-* (len_in_bits(message) % 512 == 488)
-*/
-
-static uint8_t PADDING[64] = {
-  0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+static uint8_t g_s[64] = {
+	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 };
 
-/* Binary integer part of the sines of integers (Radians) as constants:
- * for(int i = 0; i < 64; i++)
- *    TABLE[i] = (int)(pow(2, 32) × abs(sin(i + 1)))
- * (I just use the following precomputed table)
+/*
+** Array used to append padding to the message,
+** Starts from 1 bit (ASCII 128(dec) / 0x80(hex)) and ends
+** by n 0 bits according to the message:
+** (len_in_bits(message) % 512 == 488)
 */
 
-static uint32_t TABLE[64] = {
+static uint8_t g_padding[64] = {
+	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+/*
+** Binary integer part of the sines of integers (Radians) as constants:
+** for(int i = 0; i < 64; i++)
+**    TABLE[i] = (int)(pow(2, 32) × abs(sin(i + 1)))
+** (I just use the following precomputed table)
+*/
+
+static uint32_t g_table[64] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -43,113 +58,86 @@ static uint32_t TABLE[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
-static uint32_t current_chunk;
+static uint32_t g_current_chunk;
 
-void md5_message_padding_append(t_ssl *message_data)
+void				md5_message_padding_append(t_ssl *message_data)
 {
 	message_data->message_len = ft_strlen((const char *)message_data->message);
-	message_data->padding_len = 0; /* count of symbols to add */
-	while ((++message_data->padding_len + message_data->message_len) % DIV_BYTES != NEEDED_MODULO_BYTES);
-	ft_memcpy(message_data->message + message_data->message_len, PADDING, message_data->padding_len);
+	message_data->padding_len = 0;
+	while ((++message_data->padding_len + message_data->message_len)
+								% DIV_BYTES != NEEDED_MODULO_BYTES)
+		;
+	ft_memcpy(message_data->message + message_data->message_len,
+							g_padding, message_data->padding_len);
 }
 
-void md5_message_length_append(t_ssl *message_data)
+void				md5_message_length_append(t_ssl *message_data)
 {
-	uint64_t bits_len = 8 * message_data->message_len;
-	memcpy(message_data->message + message_data->message_len + message_data->padding_len, &bits_len, 8);
-	message_data->full_message_len_bytes = message_data->message_len + message_data->padding_len + 8;
+	uint64_t bits_len;
+
+	bits_len = 8 * message_data->message_len;
+	memcpy(message_data->message + message_data->message_len +
+						message_data->padding_len, &bits_len, 8);
+	message_data->full_message_len_bytes = message_data->message_len
+								+ message_data->padding_len + 8;
 }
 
-t_md5_result_vector md5_cycle_calculation(uint32_t *chunk, t_md5_result_vector calc_vector)
+t_md5_result_vector	md5_cycle_calculation(uint32_t *chunk,
+							t_md5_result_vector calc_vector)
 {
 	t_md5_cycle_variables var;
 
 	var.i = 0;
-	while (var.i < 64) {
-		if (var.i < 16) {
-			var.f = F(calc_vector.b, calc_vector.c, calc_vector.d);
-			var.g = var.i;
-		} else if (var.i < 32) {
-			var.f = G(calc_vector.b, calc_vector.c, calc_vector.d);
-			var.g = (5 * var.i + 1) % 16;
-		} else if (var.i < 48) {
-			var.f = H(calc_vector.b, calc_vector.c, calc_vector.d);
-			var.g = (3 * var.i + 5) % 16;
-		} else if (var.i < 64) {
-			var.f = I(calc_vector.b, calc_vector.c, calc_vector.d);
-			var.g = (7 * var.i) % 16;
-		}
-		var.f = var.f + calc_vector.a + TABLE[var.i] + *(chunk + var.g);
+	while (var.i < 64)
+	{
+		md5_rounds(&var, calc_vector);
+		var.f = var.f + calc_vector.a + g_table[var.i] + *(chunk + var.g);
 		calc_vector.a = calc_vector.d;
 		calc_vector.d = calc_vector.c;
 		calc_vector.c = calc_vector.b;
-		calc_vector.b = calc_vector.b + LEFT_ROTATE(var.f, s[var.i]);
+		calc_vector.b = calc_vector.b + LEFT_ROTATE(var.f, g_s[var.i]);
 		var.i++;
 	}
-	return calc_vector;
+	return (calc_vector);
 }
 
-uint32_t *md5_get_current_chunk(t_ssl *message_data)
+uint32_t			*md5_get_current_chunk(t_ssl *message_data)
 {
-	if (current_chunk >= message_data->full_message_len_bytes / CHUNK_LEN_BYTES)
-		return NULL;
+	uint32_t *chunk;
 
-	uint32_t *chunk = (uint32_t *)(message_data->message + current_chunk * CHUNK_LEN_BYTES);
-	current_chunk++;
-
-	return chunk;
+	if (g_current_chunk >= message_data->full_message_len_bytes
+											/ CHUNK_LEN_BYTES)
+		return (NULL);
+	chunk = (uint32_t *)(message_data->message +
+						(g_current_chunk * CHUNK_LEN_BYTES));
+	g_current_chunk++;
+	return (chunk);
 }
 
-t_md5_result_vector md5_vector_init_default (t_md5_result_vector dest)
+size_t				md5(t_ssl *message_data)
 {
-	dest.a = A_INIT_VALUE;
-	dest.b = B_INIT_VALUE;
-	dest.c = C_INIT_VALUE;
-	dest.d = D_INIT_VALUE;
-
-	current_chunk = 0;
-	return (dest);
-}
-
-t_md5_result_vector md5_vector_copy(t_md5_result_vector dest, t_md5_result_vector src)
-{
-	dest.a = src.a;
-	dest.b = src.b;
-	dest.c = src.c;
-	dest.d = src.d;
-	return (dest);
-}
-
-t_md5_result_vector md5_vector_add(t_md5_result_vector dest, t_md5_result_vector src)
-{
-	dest.a += src.a;
-	dest.b += src.b;
-	dest.c += src.c;
-	dest.d += src.d;
-	return (dest);
-}
-
-size_t md5(t_ssl *message_data)
-{
-	t_md5_result_vector result_vector;
-	t_md5_result_vector calc_vector;
-	uint32_t *chunk = NULL;
+	t_md5_result_vector	result_vector;
+	t_md5_result_vector	calc_vector;
+	uint32_t			*chunk;
+	uint8_t				result[16];
+	int					i;
 
 	md5_message_padding_append(message_data);
 	md5_message_length_append(message_data);
-
-	result_vector = md5_vector_init_default(result_vector);
-	while ((chunk = md5_get_current_chunk(message_data))) {
+	result_vector = md5_vector_init_default();
+	chunk = NULL;
+	g_current_chunk = 0;
+	while ((chunk = md5_get_current_chunk(message_data)))
+	{
 		calc_vector = md5_vector_copy(calc_vector, result_vector);
 		calc_vector = md5_cycle_calculation(chunk, calc_vector);
 		result_vector = md5_vector_add(result_vector, calc_vector);
 	}
-	// getting result to byte array
-	uint8_t result[16];
 	ft_memcpy(result, &result_vector, 16);
-	// format hex output of result
-	for (int i = 0; i < 16; i++) {
-		ft_printf("%02x", result[i]);
+	i = 0;
+	while (i < 16)
+	{
+		ft_printf("%02x", result[i++]);
 	}
-	return 0;
+	return (0);
 }
