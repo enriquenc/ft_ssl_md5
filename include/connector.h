@@ -36,14 +36,17 @@ typedef struct	s_parser_data {
 	t_algorithm			algorithm;
 }				t_parser_data;
 
-size_t			md5(uint8_t *dest_buf, uint8_t *message);
+uint8_t			*md5(uint8_t *dest_buf, uint8_t *message);
 void			connector(t_parser_data *message_data);
 void			ft_ssl_error(t_error code, void *arg);
-size_t			sha256(uint8_t *dest_buf, uint8_t *message);
+uint8_t			*sha256(uint8_t *dest_buf, uint8_t *message);
 t_parser_data	parser(int argc, char **argv);
 uint8_t			get_file_content(uint8_t *dest, char *file_name);
 void			read_from_descriptor(uint8_t *dest, int fd);
 void			init_ssl_structure(t_ssl *message_data, uint8_t *message);
 void			message_padding_append(t_ssl *message_data);
-
+uint32_t		*get_current_chunk(t_ssl *message_data,
+											uint8_t chunk_len_bytes);
+void			message_length_append(t_ssl *message_data,
+												uint64_t bits_len);
 #endif

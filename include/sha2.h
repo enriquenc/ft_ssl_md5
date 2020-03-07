@@ -10,6 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+/*
+** This header include parts of code for SHA‑256, SHA‑224
+** hash algorithms
+*/
+
 #ifndef SHA2_H
 # define SHA2_H
 
@@ -21,6 +26,8 @@
 # define BSIG1(x) (LEFT_ROTATE(x, 6) ^ LEFT_ROTATE(x, 11) ^ LEFT_ROTATE(x, 25))
 # define SSIG0(x) (LEFT_ROTATE(x, 7) ^ LEFT_ROTATE(x, 18) ^ ((x) >> 3))
 # define SSIG1(x) (LEFT_ROTATE(x, 17) ^ LEFT_ROTATE(x, 19) ^ ((x) >> 10))
+
+# define SHA2_CHUNK_LEN_BYTES (512 / 8)
 
 typedef struct		s_sha256_result_vector {
 	uint32_t h0;

@@ -46,17 +46,6 @@ static uint32_t g_table[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
-void				md5_message_length_append(t_ssl *message_data)
-{
-	uint64_t bits_len;
-
-	bits_len = 8 * message_data->message_len;
-	memcpy(message_data->message + message_data->message_len +
-						message_data->padding_len, &bits_len, 8);
-	message_data->full_message_len_bytes = message_data->message_len
-								+ message_data->padding_len + 8;
-}
-
 t_md5_result_vector	md5_cycle_calculation(uint32_t *chunk,
 							t_md5_result_vector calc_vector)
 {
@@ -76,35 +65,23 @@ t_md5_result_vector	md5_cycle_calculation(uint32_t *chunk,
 	return (calc_vector);
 }
 
-uint32_t			*md5_get_current_chunk(t_ssl *message_data)
-{
-	uint32_t *chunk;
-
-	if (message_data->current_chunk >= message_data->full_message_len_bytes
-											/ CHUNK_LEN_BYTES)
-		return (NULL);
-	chunk = (uint32_t *)(message_data->message +
-						(message_data->current_chunk * CHUNK_LEN_BYTES));
-	message_data->current_chunk++;
-	return (chunk);
-}
-
-size_t				md5(uint8_t *dest_buf, uint8_t *message)
+uint8_t				*md5(uint8_t *dest_buf, uint8_t *message)
 {
 	t_md5_result_vector	result_vector;
 	t_md5_result_vector	calc_vector;
-	t_ssl				message_data;
+	t_ssl				msg_data;
 
-	init_ssl_structure(&message_data, message);
-	message_padding_append(&message_data);
-	md5_message_length_append(&message_data);
+	init_ssl_structure(&msg_data, message);
+	message_padding_append(&msg_data);
+	message_length_append(&msg_data, msg_data.message_len * 8);
 	result_vector = md5_vector_init_default();
-	while ((message_data.chunk = md5_get_current_chunk(&message_data)))
+	while ((msg_data.chunk =
+		get_current_chunk(&msg_data, MD5_CHUNK_LEN_BYTES)))
 	{
 		calc_vector = md5_vector_copy(calc_vector, result_vector);
-		calc_vector = md5_cycle_calculation(message_data.chunk, calc_vector);
+		calc_vector = md5_cycle_calculation(msg_data.chunk, calc_vector);
 		result_vector = md5_vector_add(result_vector, calc_vector);
 	}
 	ft_memcpy(dest_buf, &result_vector, 16);
-	return (0);
+	return (dest_buf);
 }

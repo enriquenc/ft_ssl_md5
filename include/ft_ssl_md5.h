@@ -22,8 +22,6 @@
 # define NEEDED_MODULO_BYTES (448 / 8)
 # define DIV_BYTES (512 / 8)
 
-# define CHUNK_LEN_BYTES (512 / 8)
-
 # define LEFT_ROTATE(a, b) (((a) << (b)) | ((a) >> (32 - (b))))
 # define RIGHT_ROTATE(a, b) (((a) >> (b)) | ((a) << (32 - (b))))
 
@@ -47,6 +45,6 @@ typedef struct	s_ssl {
 	size_t		full_message_len_bytes;
 }				t_ssl;
 
-typedef size_t	(*t_hash_func)(uint8_t *dest_buf, uint8_t *message);
+typedef uint8_t *	(*t_hash_func)(uint8_t *dest_buf, uint8_t *message);
 
 #endif

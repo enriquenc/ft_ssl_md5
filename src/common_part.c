@@ -29,16 +29,39 @@ void				init_ssl_structure(t_ssl *message_data, uint8_t *msg)
 {
 	message_data->current_chunk = 0;
 	message_data->chunk = NULL;
-	ft_memcpy(message_data->message, msg, strlen((const char *)msg) + 1);
+	message_data->message_len = ft_strlen((const char *)msg);
+	ft_memcpy(message_data->message, msg, message_data->message_len + 1);
 }
 
 void				message_padding_append(t_ssl *message_data)
 {
-	message_data->message_len = ft_strlen((const char *)message_data->message);
 	message_data->padding_len = 0;
 	while ((++message_data->padding_len + message_data->message_len)
 								% DIV_BYTES != NEEDED_MODULO_BYTES)
 		;
 	ft_memcpy(message_data->message + message_data->message_len,
 							g_padding, message_data->padding_len);
+}
+
+uint32_t			*get_current_chunk(t_ssl *message_data,
+											uint8_t chunk_len_bytes)
+{
+	uint32_t *chunk;
+
+	if (message_data->current_chunk >= message_data->full_message_len_bytes
+											/ chunk_len_bytes)
+		return (NULL);
+	chunk = (uint32_t *)(message_data->message +
+						(message_data->current_chunk * chunk_len_bytes));
+	message_data->current_chunk++;
+	return (chunk);
+}
+
+void				message_length_append(t_ssl *message_data,
+												uint64_t bits_len)
+{
+	memcpy(message_data->message + message_data->message_len +
+						message_data->padding_len, &bits_len, 8);
+	message_data->full_message_len_bytes = message_data->message_len
+								+ message_data->padding_len + 8;
 }

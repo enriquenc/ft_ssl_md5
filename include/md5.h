@@ -24,6 +24,8 @@
 # define C_INIT_VALUE 0x98badcfe;
 # define D_INIT_VALUE 0x10325476;
 
+# define MD5_CHUNK_LEN_BYTES (512 / 8)
+
 typedef struct		s_md5_result_vector {
 	uint32_t a;
 	uint32_t b;

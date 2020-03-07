@@ -77,16 +77,16 @@ t_sha256_result_vector	sha256_vector_init_default(void)
 	return init;
 }
 
-size_t	sha256(uint8_t *dest_buf, uint8_t *message)
+uint8_t	*sha256(uint8_t *dest_buf, uint8_t *message)
 {
 	t_sha256_result_vector result_vector;
 	uint32_t *chunk;
-	t_ssl				message_data;
+	t_ssl				msg_data;
 	ft_printf("sha256: non implemented yet.\n");
 
-	init_ssl_structure(&message_data, message);
-	message_padding_append(&message_data);
-	sha256_message_length_append(&message_data);
+	init_ssl_structure(&msg_data, message);
+	message_padding_append(&msg_data);
+	message_length_append(&msg_data, swap_int64(msg_data.message_len * 8));
 	result_vector = sha256_vector_init_default();
 	chunk = NULL;
 	g_current_chunk = 0;
@@ -94,12 +94,13 @@ size_t	sha256(uint8_t *dest_buf, uint8_t *message)
 	//while ((chunk))
 	(void )dest_buf;
 
-	for (size_t i = 0; i < message_data.full_message_len_bytes; i++) {
-		ft_printf("%02x", message_data.message[i]);
+	for (size_t i = 0; i < msg_data.full_message_len_bytes; i++) {
+		ft_printf("%02x", msg_data.message[i]);
 		if (!((i + 1) % 4))
 			ft_putchar(' ');
 	}
-	return (message_data.message_len);
+	ft_putchar('\n');
+	return (dest_buf);
 }
 
 #if 0
