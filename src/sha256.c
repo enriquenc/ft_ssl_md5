@@ -6,14 +6,14 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:44 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 22:35:50 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 01:09:23 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include <sha2.h>
 #include <sha256.h>
-#include <md5.h>
+#include <connector.h>
 
 #define SHA256_BLOCK_SIZE 32
 
@@ -32,8 +32,6 @@ uint64_t		swap_int64(const uint64_t val)
 }
 
 extern uint8_t g_padding;
-
-void				md5_message_padding_append(t_ssl *message_data);
 
 
 void				sha256_message_length_append(t_ssl *message_data)
@@ -79,8 +77,6 @@ t_sha256_result_vector	sha256_vector_init_default(void)
 	return init;
 }
 
-void			init_ssl_structure(t_ssl *message_data, uint8_t *message);
-
 size_t	sha256(uint8_t *dest_buf, uint8_t *message)
 {
 	t_sha256_result_vector result_vector;
@@ -89,7 +85,7 @@ size_t	sha256(uint8_t *dest_buf, uint8_t *message)
 	ft_printf("sha256: non implemented yet.\n");
 
 	init_ssl_structure(&message_data, message);
-	md5_message_padding_append(&message_data);
+	message_padding_append(&message_data);
 	sha256_message_length_append(&message_data);
 	result_vector = sha256_vector_init_default();
 	chunk = NULL;
@@ -106,10 +102,7 @@ size_t	sha256(uint8_t *dest_buf, uint8_t *message)
 	return (message_data.message_len);
 }
 
-
 #if 0
-
-
 // typedef struct {
 // 	uint8_t data[64];
 // 	uint32_t datalen;
@@ -235,6 +228,5 @@ void sha256_final(SHA256_CTX *ctx, uint8_t hash[])
 		hash[i + 28] = (ctx->state[7] >> (24 - i * 8)) & 0x000000ff;
 	}
 }
-
 
 #endif

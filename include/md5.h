@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:53 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 16:00:19 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 01:03:16 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,6 @@
 # define G(B, C, D) ((B) & (D)) | ((C) & ~(D))
 # define H(B, C, D) (B) ^ (C) ^ (D)
 # define I(B, C, D) (C) ^ (B | ~(D))
-
-# define LEFT_ROTATE(x, c) ((x << c) | (x >> (32 - c)));
-
-# define NEEDED_MODULO_BYTES (448 / 8)
-# define DIV_BYTES (512 / 8)
-
-# define CHUNK_LEN_BYTES (512 / 8)
 
 # define A_INIT_VALUE 0x67452301;
 # define B_INIT_VALUE 0xefcdab89;

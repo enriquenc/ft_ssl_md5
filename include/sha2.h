@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 17:51:00 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 19:16:34 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 01:05:40 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,12 @@
 
 # include <ft_ssl_md5.h>
 
-#define ROTLEFT(a, b) (((a) << (b)) | ((a) >> (32 - (b))))
-#define ROTRIGHT(a, b) (((a) >> (b)) | ((a) << (32 - (b))))
-
-#define CH(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
-#define MAJ(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-#define BSIG0(x) (ROTRIGHT(x, 2) ^ ROTRIGHT(x, 13) ^ ROTRIGHT(x, 22))
-#define BSIG1(x) (ROTRIGHT(x, 6) ^ ROTRIGHT(x, 11) ^ ROTRIGHT(x, 25))
-#define SSIG0(x) (ROTRIGHT(x, 7) ^ ROTRIGHT(x, 18) ^ ((x) >> 3))
-#define SSIG1(x) (ROTRIGHT(x, 17) ^ ROTRIGHT(x, 19) ^ ((x) >> 10))
-
+# define CH(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
+# define MAJ(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+# define BSIG0(x) (LEFT_ROTATE(x, 2) ^ LEFT_ROTATE(x, 13) ^ LEFT_ROTATE(x, 22))
+# define BSIG1(x) (LEFT_ROTATE(x, 6) ^ LEFT_ROTATE(x, 11) ^ LEFT_ROTATE(x, 25))
+# define SSIG0(x) (LEFT_ROTATE(x, 7) ^ LEFT_ROTATE(x, 18) ^ ((x) >> 3))
+# define SSIG1(x) (LEFT_ROTATE(x, 17) ^ LEFT_ROTATE(x, 19) ^ ((x) >> 10))
 
 typedef struct		s_sha256_result_vector {
 	uint32_t h0;

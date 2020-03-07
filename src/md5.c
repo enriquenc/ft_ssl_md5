@@ -6,30 +6,18 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 22:34:42 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 01:08:18 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <md5.h>
+#include <connector.h>
 
 static uint8_t g_s[64] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
 	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
 	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
-};
-
-/*
-** Array used to append padding to the message,
-** Starts from 1 bit (ASCII 128(dec) / 0x80(hex)) and ends
-** by n 0 bits according to the message:
-** (len_in_bits(message) % 512 == 488)
-*/
-
-uint8_t g_padding[64] = {
-	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 /*
@@ -57,17 +45,6 @@ static uint32_t g_table[64] = {
 	0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
-
-void				md5_message_padding_append(t_ssl *message_data)
-{
-	message_data->message_len = ft_strlen((const char *)message_data->message);
-	message_data->padding_len = 0;
-	while ((++message_data->padding_len + message_data->message_len)
-								% DIV_BYTES != NEEDED_MODULO_BYTES)
-		;
-	ft_memcpy(message_data->message + message_data->message_len,
-							g_padding, message_data->padding_len);
-}
 
 void				md5_message_length_append(t_ssl *message_data)
 {
@@ -112,13 +89,6 @@ uint32_t			*md5_get_current_chunk(t_ssl *message_data)
 	return (chunk);
 }
 
-void			init_ssl_structure(t_ssl *message_data, uint8_t *message)
-{
-	message_data->current_chunk = 0;
-	message_data->chunk = NULL;
-	ft_memcpy(message_data->message, message, strlen((const char *)message) + 1);
-}
-
 size_t				md5(uint8_t *dest_buf, uint8_t *message)
 {
 	t_md5_result_vector	result_vector;
@@ -126,7 +96,7 @@ size_t				md5(uint8_t *dest_buf, uint8_t *message)
 	t_ssl				message_data;
 
 	init_ssl_structure(&message_data, message);
-	md5_message_padding_append(&message_data);
+	message_padding_append(&message_data);
 	md5_message_length_append(&message_data);
 	result_vector = md5_vector_init_default();
 	while ((message_data.chunk = md5_get_current_chunk(&message_data)))

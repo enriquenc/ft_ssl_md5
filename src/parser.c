@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 22:46:33 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 00:49:22 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_algorithm			parser_algorithm_get(char *command)
 		i++;
 	}
 	ft_ssl_error(INVALID_COMMAND, command);
-	return g_algorithms[0];
+	return (g_algorithms[0]);
 }
 
 void				parser_options(t_parser_data *parsed_data,
