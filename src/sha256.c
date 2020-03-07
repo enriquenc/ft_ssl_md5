@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:44 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 20:24:04 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 22:35:50 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ t_sha256_result_vector	sha256_vector_init_default(void)
 
 void			init_ssl_structure(t_ssl *message_data, uint8_t *message);
 
-size_t	sha256(uint8_t *message)
+size_t	sha256(uint8_t *dest_buf, uint8_t *message)
 {
 	t_sha256_result_vector result_vector;
 	uint32_t *chunk;
@@ -96,6 +96,7 @@ size_t	sha256(uint8_t *message)
 	g_current_chunk = 0;
 
 	//while ((chunk))
+	(void )dest_buf;
 
 	for (size_t i = 0; i < message_data.full_message_len_bytes; i++) {
 		ft_printf("%02x", message_data.message[i]);

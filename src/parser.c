@@ -6,18 +6,18 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 18:39:10 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 22:46:33 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <connector.h>
 
-t_algorithms g_algorithms[MAX] = {
-	{.name = "md5", .alg = MD5},
-	{.name = "sha256", .alg = SHA256}
+t_algorithm g_algorithms[MAX] = {
+	{.name = "md5", .num = MD5, .func = md5, .digest_len_bytes = 16},
+	{.name = "sha256", .num = SHA256, .func = sha256, .digest_len_bytes = 32},
 };
 
-t_hash_algorithm	parser_algorithm_get(char *command)
+t_algorithm			parser_algorithm_get(char *command)
 {
 	uint8_t i;
 
@@ -26,12 +26,12 @@ t_hash_algorithm	parser_algorithm_get(char *command)
 	{
 		if (ft_strequ((const char *)g_algorithms[i].name, command))
 		{
-			return (g_algorithms[i].alg);
+			return (g_algorithms[i]);
 		}
 		i++;
 	}
 	ft_ssl_error(INVALID_COMMAND, command);
-	return (MAX);
+	return g_algorithms[0];
 }
 
 void				parser_options(t_parser_data *parsed_data,

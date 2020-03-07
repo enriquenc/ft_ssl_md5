@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:49 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 19:53:44 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 22:34:10 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,6 @@ typedef struct	s_ssl {
 	size_t		full_message_len_bytes;
 }				t_ssl;
 
-typedef struct	s_parser_data {
-	t_hash_algorithm	algorithm;
-	uint8_t				options;
-	char				*s_option_data[MAX_STRING_ARGUMENT_COUNT];
-	char				*files_data[MAX_FILE_ARGUMENT_COUNT];
-}				t_parser_data;
-
-typedef size_t	(*t_hash_func)(uint8_t *message);
+typedef size_t	(*t_hash_func)(uint8_t *dest_buf, uint8_t *message);
 
 #endif

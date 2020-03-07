@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:45 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 19:51:35 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 22:44:21 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 
 # include <ft_ssl_md5.h>
 
-typedef struct	s_hash_functions {
-	t_hash_func func;
-}				t_hash_functions;
-
 typedef enum	e_error {
 	USAGE,
 	INVALID_COMMAND,
@@ -26,15 +22,24 @@ typedef enum	e_error {
 	EXPECTED_ARGUMENT,
 }				t_error;
 
-typedef struct	s_algorithms {
+typedef struct	s_algorithm {
 	char				name[24];
-	t_hash_algorithm	alg;
-}				t_algorithms;
+	t_hash_algorithm	num;
+	t_hash_func			func;
+	uint8_t				digest_len_bytes;
+}				t_algorithm;
 
-size_t			md5(uint8_t *message);
+typedef struct	s_parser_data {
+	uint8_t				options;
+	char				*s_option_data[MAX_STRING_ARGUMENT_COUNT];
+	char				*files_data[MAX_FILE_ARGUMENT_COUNT];
+	t_algorithm			algorithm;
+}				t_parser_data;
+
+size_t			md5(uint8_t *dest_buf, uint8_t *message);
 void			connector(t_parser_data *message_data);
 void			ft_ssl_error(t_error code, void *arg);
-size_t			sha256(uint8_t *message);
+size_t			sha256(uint8_t *dest_buf, uint8_t *message);
 t_parser_data	parser(int argc, char **argv);
 
 #endif

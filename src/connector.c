@@ -6,19 +6,12 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:34:40 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 21:28:29 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 00:07:29 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <connector.h>
 #include <fcntl.h>
-
-t_hash_functions g_all[MAX] = {
-	{.func = md5},
-	{.func = sha256}
-};
-
-extern t_algorithms g_algorithms[MAX];
 
 void		read_from_descriptor(uint8_t *dest, int fd)
 {
@@ -34,8 +27,12 @@ void		read_from_descriptor(uint8_t *dest, int fd)
 		ft_memcpy(dest + size, "\n", 1);
 		size++;
 	}
-	if (line)
+	if (line) {
 		ft_memcpy(dest + size, line, strlen(line));
+		size += strlen(line);
+	}
+	*(dest + size) = 0;
+	free(line);
 }
 
 uint8_t		get_file_content(uint8_t *dest, char *file_name)
@@ -53,76 +50,82 @@ uint8_t		get_file_content(uint8_t *dest, char *file_name)
 	return (1);
 }
 
-const char	*get_algorithm_str(t_hash_algorithm alg)
-{
-	int		i;
-	size_t	j;
+uint8_t *digest_to_hex_string(uint8_t *hex_string_buf, uint8_t *digest, int len) {
+	int i = 0;
+	int hex_string_size;
+	char *hex_str;
 
-	i = 0;
-	j = 0;
-	while (i < MAX)
-	{
-		if (g_algorithms[i].alg == alg)
-		{
-			while (j < ft_strlen(g_algorithms[i].name))
-			{
-				g_algorithms[i].name[j] = ft_toupper(g_algorithms[i].name[j]);
-				j++;
-			}
-			return (g_algorithms[i].name);
-		}
+	hex_string_size = 0;
+	while (i < len) {
+		hex_str = itoa_base(digest[i], 16, 'a');
+		if (digest[i] < 16)
+			ft_memcpy(hex_string_buf + hex_string_size++, "0", 1);
+		ft_memcpy(hex_string_buf + hex_string_size, hex_str, ft_strlen(hex_str));
+		hex_string_size += ft_strlen(hex_str);
+		free(hex_str);
 		i++;
 	}
-	return ("(NULL)");
+	hex_string_buf[hex_string_size] = 0;
+	return hex_string_buf;
 }
 
-void		connector(t_parser_data *parsed_data)
+void		from_stdin_encryption(t_parser_data *parsed, uint8_t *buf, uint8_t *digest)
 {
-	char **string_array;
-	char **files_array;
+	read_from_descriptor(buf, 0);
+	parsed->algorithm.func(digest, buf);
+	if (parsed->options & FLAG_P)
+		ft_printf("%s", buf);
+	digest_to_hex_string(buf, digest, parsed->algorithm.digest_len_bytes);
+	ft_printf("%s\n", buf);
+}
+
+void		from_s_argument_encryption(t_parser_data *parsed, uint8_t *src, uint8_t *buf, uint8_t *digest)
+{
+	parsed->algorithm.func(digest, src);
+	digest_to_hex_string(buf, digest, parsed->algorithm.digest_len_bytes);
+	if (!(parsed->options & FLAG_Q) && !(parsed->options & FLAG_R))
+		ft_printf("%s (\"%s\") = %s\n", parsed->algorithm.name, src, buf);
+	else if (!(parsed->options & FLAG_Q) && parsed->options & FLAG_R)
+		ft_printf("%s \"%s\"\n", buf, src);
+	else
+		ft_printf("%s\n", buf);
+}
+
+void		from_file_encryption(t_parser_data *parsed, char *file, uint8_t *buf, uint8_t *digest)
+{
+	parsed->algorithm.func(digest, buf);
+	digest_to_hex_string(buf, digest, parsed->algorithm.digest_len_bytes);
+	if (!(parsed->options & FLAG_Q) && !(parsed->options & FLAG_R))
+		ft_printf("%s (%s) = %s\n", parsed->algorithm.name, file, buf);
+	else if (!(parsed->options & FLAG_Q) && parsed->options & FLAG_R)
+		ft_printf("%s %s\n", buf, file);
+	else
+		ft_printf("%s\n", buf);
+}
+
+void		connector(t_parser_data *parsed)
+{
+	char **str_arr;
+	char **f_arr;
 	uint8_t buf[MAX_BUFFER_SIZE];
+	uint8_t digest[128];
 	int i;
 
 	i = 0;
-	string_array = parsed_data->s_option_data;
-	files_array = parsed_data->files_data;
+	str_arr = parsed->s_option_data;
+	f_arr = parsed->files_data;
 
-	if ((string_array[0] == NULL && files_array[0] == NULL) ||
-									parsed_data->options & FLAG_P)
-	{
-		read_from_descriptor(buf, 0);
-		if (!(parsed_data->options & FLAG_Q) && parsed_data->options & FLAG_P)
-			ft_printf("%s", buf);
-		g_all[parsed_data->algorithm].func(buf);
-		ft_putchar('\n');
-	}
+	if ((str_arr[0] == NULL && f_arr[0] == NULL) || parsed->options & FLAG_P)
+		from_stdin_encryption(parsed, buf, digest);
 
-	while (string_array[i])
-	{
+	while (str_arr[i])
+		from_s_argument_encryption(parsed, (uint8_t *)str_arr[i++], buf, digest);
 
-		if (!(parsed_data->options & FLAG_Q) && !(parsed_data->options & FLAG_R))
-			ft_printf("%s (\"%s\") = ", get_algorithm_str(parsed_data->algorithm), string_array[i]);
-
-		g_all[parsed_data->algorithm].func((uint8_t *)string_array[i]);
-		if (!(parsed_data->options & FLAG_Q) && parsed_data->options & FLAG_R)
-			ft_printf(" \"%s\"", string_array[i]);
-		i++;
-	}
-	if (i)
-		ft_putchar('\n');
 	i = 0;
-	while (files_array[i])
+	while (f_arr[i])
 	{
-		if (get_file_content(buf, files_array[i]))
-		{
-			if (!(parsed_data->options & FLAG_Q) && !(parsed_data->options & FLAG_R))
-				ft_printf("%s (%s) = \n", get_algorithm_str(parsed_data->algorithm), files_array[i]);
-			g_all[parsed_data->algorithm].func(buf);
-			if (!(parsed_data->options & FLAG_Q) && parsed_data->options & FLAG_R)
-				ft_printf(" %s\n", files_array[i]);
-		}
+		if (get_file_content(buf, f_arr[i]))
+			from_file_encryption(parsed, f_arr[i], buf, digest);
 		i++;
 	}
-	if (parsed_data->options & FLAG_Q)
-		ft_putchar('\n');
 }

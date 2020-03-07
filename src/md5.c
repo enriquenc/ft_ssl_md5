@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 20:23:49 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/07 22:34:42 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,17 +119,13 @@ void			init_ssl_structure(t_ssl *message_data, uint8_t *message)
 	ft_memcpy(message_data->message, message, strlen((const char *)message) + 1);
 }
 
-size_t				md5(uint8_t *message)
+size_t				md5(uint8_t *dest_buf, uint8_t *message)
 {
 	t_md5_result_vector	result_vector;
 	t_md5_result_vector	calc_vector;
 	t_ssl				message_data;
-	uint8_t				result[16];
-	int					i;
 
-	ft_printf("md5\n");
 	init_ssl_structure(&message_data, message);
-	ft_printf("structure inited\n");
 	md5_message_padding_append(&message_data);
 	md5_message_length_append(&message_data);
 	result_vector = md5_vector_init_default();
@@ -139,11 +135,6 @@ size_t				md5(uint8_t *message)
 		calc_vector = md5_cycle_calculation(message_data.chunk, calc_vector);
 		result_vector = md5_vector_add(result_vector, calc_vector);
 	}
-	ft_memcpy(result, &result_vector, 16);
-	i = 0;
-	while (i < 16)
-	{
-		ft_printf("%02x", result[i++]);
-	}
+	ft_memcpy(dest_buf, &result_vector, 16);
 	return (0);
 }
