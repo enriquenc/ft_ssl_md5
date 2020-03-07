@@ -5,7 +5,7 @@ import subprocess
 
 def md5_test(text):
 	org = hashlib.md5(text.encode('utf-8')).hexdigest()
-	result = subprocess.run(['./ft_ssl', text], stdout=subprocess.PIPE)
+	result = subprocess.run(['./ft_ssl', 'md5', '-s', text], stdout=subprocess.PIPE)
 	my = result.stdout.decode('utf-8').rstrip()
 	if org == my:
 		print("OK")
