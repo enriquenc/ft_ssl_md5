@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:34:40 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 00:57:47 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 02:46:41 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void		connector(t_parser_data *parsed)
 	char	**str_arr;
 	char	**f_arr;
 	uint8_t	buf[MAX_BUFFER_SIZE];
-	uint8_t	digest[128];
+	uint8_t	digest[256];
 	int		i;
 
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:44 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 01:09:23 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 03:22:51 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,18 @@
 
 #define SHA256_BLOCK_SIZE 32
 
-static uint32_t g_current_chunk;
+uint32_t		swap_int32(const uint32_t value)
+{
+	uint32_t result;
+
+	result = 0;
+	result |= (value & 0x000000FF) << 24;
+	result |= (value & 0x0000FF00) << 8;
+	result |= (value & 0x00FF0000) >> 8;
+	result |= (value & 0xFF000000) >> 24;
+	return (result);
+}
+
 
 uint64_t		swap_int64(const uint64_t val)
 {
@@ -47,19 +58,19 @@ void				sha256_message_length_append(t_ssl *message_data)
 }
 
 
-// static const uint32_t g_sha_2_constant[64] = {
-// 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
-// 	0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
-// 	0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
-// 	0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-// 	0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
-// 	0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
-// 	0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
-// 	0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-// 	0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
-// 	0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-// 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
-// };
+static const uint32_t g_K[64] = {
+	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
+	0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+	0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
+	0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+	0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
+	0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+	0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
+	0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+	0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
+	0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+};
 
 t_sha256_result_vector	sha256_vector_init_default(void)
 {
@@ -77,29 +88,91 @@ t_sha256_result_vector	sha256_vector_init_default(void)
 	return init;
 }
 
+t_sha256_result_vector sha256_vector_copy(t_sha256_result_vector dest,
+										t_sha256_result_vector src)
+{
+	dest.h0 = src.h0; // a
+	dest.h1 = src.h1; // b
+	dest.h2 = src.h2; // c
+	dest.h3 = src.h3; // d
+	dest.h4 = src.h4; // e
+	dest.h5 = src.h5; // f
+	dest.h6 = src.h6; // g
+	dest.h7 = src.h7; // h
+	return (dest);
+}
+
+t_sha256_result_vector sha256_vector_add(t_sha256_result_vector dest,
+										t_sha256_result_vector src)
+{
+	dest.h0 += src.h0; // a
+	dest.h1 += src.h1; // b
+	dest.h2 += src.h2; // c
+	dest.h3 += src.h3; // d
+	dest.h4 += src.h4; // e
+	dest.h5 += src.h5; // f
+	dest.h6 += src.h6; // g
+	dest.h7 += src.h7; // h
+	return (dest);
+}
+
 uint8_t	*sha256(uint8_t *dest_buf, uint8_t *message)
 {
 	t_sha256_result_vector result_vector;
-	uint32_t *chunk;
+	t_sha256_result_vector calc_vector;
 	t_ssl				msg_data;
-	ft_printf("sha256: non implemented yet.\n");
 
 	init_ssl_structure(&msg_data, message);
 	message_padding_append(&msg_data);
 	message_length_append(&msg_data, swap_int64(msg_data.message_len * 8));
 	result_vector = sha256_vector_init_default();
-	chunk = NULL;
-	g_current_chunk = 0;
+	int i = 0;
+	uint32_t W[64];
+	uint32_t T1;
+	uint32_t T2;
+	while ((msg_data.chunk = get_current_chunk(&msg_data,
+									SHA2_CHUNK_LEN_BYTES)))
+	{
+		ft_memcpy(W, msg_data.chunk, 16 * sizeof(uint32_t));
+		i = 15;
+		while (++i < 64)
+			W[i] = SSIG1(W[i - 2]) + W[i - 7] + SSIG0(i - 15) + W[i - 16];
+		calc_vector = sha256_vector_copy(calc_vector, result_vector);
 
-	//while ((chunk))
-	(void )dest_buf;
 
-	for (size_t i = 0; i < msg_data.full_message_len_bytes; i++) {
-		ft_printf("%02x", msg_data.message[i]);
-		if (!((i + 1) % 4))
-			ft_putchar(' ');
+
+		for (i = 0; i < 64; i++) {
+			T1 = calc_vector.h7 + BSIG1(calc_vector.h4) + CH(calc_vector.h4, calc_vector.h5, calc_vector.h6) + g_K[i] + W[i];
+			T2 = BSIG0(calc_vector.h0) + MAJ(calc_vector.h0, calc_vector.h1, calc_vector.h2);
+			calc_vector.h7 = calc_vector.h6;
+			calc_vector.h6 = calc_vector.h5;
+			calc_vector.h5 = calc_vector.h4;
+			calc_vector.h4 = calc_vector.h3 + T1;
+			calc_vector.h3 = calc_vector.h2;
+			calc_vector.h2 = calc_vector.h1;
+			calc_vector.h1 = calc_vector.h0;
+			calc_vector.h0 = T1 + T2;
+		}
+		result_vector = sha256_vector_add(result_vector, calc_vector);
 	}
-	ft_putchar('\n');
+	for (i = 0; i < 4; ++i) {
+		dest_buf[i]      = (result_vector.h0 >> (24 - i * 8)) & 0x000000ff;
+		dest_buf[i + 4]  = (result_vector.h1 >> (24 - i * 8)) & 0x000000ff;
+		dest_buf[i + 8]  = (result_vector.h2 >> (24 - i * 8)) & 0x000000ff;
+		dest_buf[i + 12] = (result_vector.h3 >> (24 - i * 8)) & 0x000000ff;
+		dest_buf[i + 16] = (result_vector.h4 >> (24 - i * 8)) & 0x000000ff;
+		dest_buf[i + 20] = (result_vector.h5 >> (24 - i * 8)) & 0x000000ff;
+		dest_buf[i + 24] = (result_vector.h6 >> (24 - i * 8)) & 0x000000ff;
+		dest_buf[i + 28] = (result_vector.h7 >> (24 - i * 8)) & 0x000000ff;
+	}
+	//ft_memcpy(dest_buf, &result_vector, sizeof(t_sha256_result_vector));
+
+	// for (size_t i = 0; i < msg_data.full_message_len_bytes; i++) {
+	// 	ft_printf("%02x", msg_data.message[i]);
+	// 	if (!((i + 1) % 4))
+	// 		ft_putchar(' ');
+	// }
+	// ft_putchar('\n');
 	return (dest_buf);
 }
 

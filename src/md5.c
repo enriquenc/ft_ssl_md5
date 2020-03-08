@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 01:08:18 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/08 02:46:15 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,6 @@ uint8_t				*md5(uint8_t *dest_buf, uint8_t *message)
 		calc_vector = md5_cycle_calculation(msg_data.chunk, calc_vector);
 		result_vector = md5_vector_add(result_vector, calc_vector);
 	}
-	ft_memcpy(dest_buf, &result_vector, 16);
+	ft_memcpy(dest_buf, &result_vector, sizeof(t_md5_result_vector));
 	return (dest_buf);
 }
