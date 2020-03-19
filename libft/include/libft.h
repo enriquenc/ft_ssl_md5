@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/20 20:43:17 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 16:01:53 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/17 23:52:49 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 # include "ft_printf.h"
 # include "get_next_line.h"
 # include "libft.h"
+
+#if __linux__
+typedef __intmax_t intmax_t;
+typedef __uintmax_t uintmax_t;
+#endif
 
 typedef struct		s_list
 {

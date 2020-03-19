@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:49 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 01:05:53 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/17 23:51:49 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@
 # define FLAG_Q (1 << 1)
 # define FLAG_R (1 << 2)
 # define FLAG_S (1 << 3)
+
+#ifdef __linux__
+typedef u_int8_t uint8_t;
+typedef u_int32_t uint32_t;
+typedef u_int64_t uint64_t;
+#endif
 
 typedef enum	e_hash_algorithm {
 	MD5,

@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 02:46:15 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/19 23:30:50 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,53 @@ static uint32_t g_table[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
+t_md5_result_vector	md5_vector_init_default(void)
+{
+	t_md5_result_vector init;
+
+	init.a = A_INIT_VALUE;
+	init.b = B_INIT_VALUE;
+	init.c = C_INIT_VALUE;
+	init.d = D_INIT_VALUE;
+	return (init);
+}
+
+t_md5_result_vector	md5_vector_add(t_md5_result_vector dest,
+										t_md5_result_vector src)
+{
+	dest.a += src.a;
+	dest.b += src.b;
+	dest.c += src.c;
+	dest.d += src.d;
+	return (dest);
+}
+
+void				md5_rounds(t_md5_cycle_variables *var,
+								t_md5_result_vector calc_vector)
+{
+	if (var->i < 16)
+	{
+		var->f = F(calc_vector.b, calc_vector.c, calc_vector.d);
+		var->g = var->i;
+	}
+	else if (var->i < 32)
+	{
+		var->f = G(calc_vector.b, calc_vector.c, calc_vector.d);
+		var->g = (5 * var->i + 1) % 16;
+	}
+	else if (var->i < 48)
+	{
+		var->f = H(calc_vector.b, calc_vector.c, calc_vector.d);
+		var->g = (3 * var->i + 5) % 16;
+	}
+	else if (var->i < 64)
+	{
+		var->f = I(calc_vector.b, calc_vector.c, calc_vector.d);
+		var->g = (7 * var->i) % 16;
+	}
+}
+
+
 t_md5_result_vector	md5_cycle_calculation(uint32_t *chunk,
 							t_md5_result_vector calc_vector)
 {
@@ -78,7 +125,7 @@ uint8_t				*md5(uint8_t *dest_buf, uint8_t *message)
 	while ((msg_data.chunk =
 		get_current_chunk(&msg_data, MD5_CHUNK_LEN_BYTES)))
 	{
-		calc_vector = md5_vector_copy(calc_vector, result_vector);
+		ft_memcpy(&calc_vector, &result_vector, sizeof(t_md5_result_vector));
 		calc_vector = md5_cycle_calculation(msg_data.chunk, calc_vector);
 		result_vector = md5_vector_add(result_vector, calc_vector);
 	}

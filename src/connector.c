@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:34:40 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 02:46:41 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/15 02:08:22 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void		from_stdin_encryption(t_parser_data *parsed, uint8_t *buf,
 	parsed->algorithm.func(digest, buf);
 	if (parsed->options & FLAG_P)
 		ft_printf("%s", buf);
-	digest_to_hex_string(buf, digest, parsed->algorithm.digest_len_bytes);
+	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
 	ft_printf("%s\n", buf);
 }
 
@@ -49,7 +49,7 @@ void		from_s_argument_encrypt(t_parser_data *parsed, uint8_t *src,
 											uint8_t *buf, uint8_t *digest)
 {
 	parsed->algorithm.func(digest, src);
-	digest_to_hex_string(buf, digest, parsed->algorithm.digest_len_bytes);
+	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
 	if (!(parsed->options & FLAG_Q) && !(parsed->options & FLAG_R))
 		ft_printf("%s (\"%s\") = %s\n", parsed->algorithm.name, src, buf);
 	else if (!(parsed->options & FLAG_Q) && parsed->options & FLAG_R)
@@ -62,7 +62,7 @@ void		from_file_encryption(t_parser_data *parsed, char *file,
 											uint8_t *buf, uint8_t *digest)
 {
 	parsed->algorithm.func(digest, buf);
-	digest_to_hex_string(buf, digest, parsed->algorithm.digest_len_bytes);
+	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
 	if (!(parsed->options & FLAG_Q) && !(parsed->options & FLAG_R))
 		ft_printf("%s (%s) = %s\n", parsed->algorithm.name, file, buf);
 	else if (!(parsed->options & FLAG_Q) && parsed->options & FLAG_R)

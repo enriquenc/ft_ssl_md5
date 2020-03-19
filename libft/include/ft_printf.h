@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 15:21:05 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/07 16:01:41 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/17 23:52:23 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@
 # include <unistd.h>
 # include <stdarg.h>
 # include "libft.h"
+
+#if __linux__
+typedef __intmax_t intmax_t;
+typedef __uintmax_t uintmax_t;
+#endif
 
 typedef struct	s_flags
 {

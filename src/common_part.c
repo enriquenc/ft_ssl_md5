@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/08 00:58:36 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 01:07:52 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/19 23:42:48 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,30 @@ uint8_t g_padding[64] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
+
+uint32_t		swap_int32(const uint32_t value)
+{
+	uint32_t result;
+
+	result = 0;
+	result |= (value & 0x000000FF) << 24;
+	result |= (value & 0x0000FF00) << 8;
+	result |= (value & 0x00FF0000) >> 8;
+	result |= (value & 0xFF000000) >> 24;
+	return (result);
+}
+
+uint64_t		swap_int64(const uint64_t val)
+{
+	return ((((val) & 0xff00000000000000ull) >> 56) |
+			(((val) & 0x00ff000000000000ull) >> 40) |
+			(((val) & 0x0000ff0000000000ull) >> 24) |
+			(((val) & 0x000000ff00000000ull) >> 8) |
+			(((val) & 0x00000000ff000000ull) << 8) |
+			(((val) & 0x0000000000ff0000ull) << 24) |
+			(((val) & 0x000000000000ff00ull) << 40) |
+			(((val) & 0x00000000000000ffull) << 56));
+}
 
 void				init_ssl_structure(t_ssl *message_data, uint8_t *msg)
 {

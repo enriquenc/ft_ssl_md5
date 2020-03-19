@@ -6,16 +6,17 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 00:49:22 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/19 23:37:36 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <connector.h>
 
 t_algorithm g_algorithms[MAX] = {
-	{.name = "md5", .num = MD5, .func = md5, .digest_len_bytes = 16},
-	{.name = "sha256", .num = SHA256, .func = sha256, .digest_len_bytes = 32},
+	{.name = "md5", .num = MD5, .func = md5, .hash_size_bytes = 16},
+	{.name = "sha256", .num = SHA256, .func = sha256, .hash_size_bytes = 32},
 };
+
 
 t_algorithm			parser_algorithm_get(char *command)
 {
