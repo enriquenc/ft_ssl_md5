@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 19:01:55 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/23 00:52:22 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_algorithm g_algorithms[MAX] = {
 	{.name = "sha256", .num = SHA256, .func = sha256, .hash_size_bytes = 256 / 8},
 	{.name = "sha224", .num = SHA224, .func = sha224, .hash_size_bytes = 224 / 8},
 	{.name = "sha512", .num = SHA512, .func = sha512, .hash_size_bytes = 512 / 8},
+	{.name = "sha384", .num = SHA384, .func = sha384, .hash_size_bytes = 384 / 8}
 };
 
 

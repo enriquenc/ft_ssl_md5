@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:49 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 20:52:07 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/23 01:07:39 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef enum	e_hash_algorithm {
 	SHA256,
 	SHA224,
 	SHA512,
+	SHA384,
 	MAX
 }				t_hash_algorithm;
 
@@ -74,7 +75,7 @@ typedef struct	s_algorithm {
 
 
 
-void				message_padding_append(t_ssl *message_data,
+void			message_padding_append(t_ssl *message_data,
 							uint8_t modulo, uint8_t need_chunk_length);
 void			message_length_append(t_ssl *message_data,
 											uint128_t bits_len, uint8_t size);

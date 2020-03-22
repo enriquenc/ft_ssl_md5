@@ -33,6 +33,7 @@ uint8_t			*md5(uint8_t *dest_buf, uint8_t *message);
 uint8_t			*sha256(uint8_t *dest_buf, uint8_t *message);
 uint8_t			*sha224(uint8_t *dest_buf, uint8_t *message);
 uint8_t			*sha512(uint8_t *dest_buf, uint8_t *message);
+uint8_t			*sha384(uint8_t *dest_buf, uint8_t *message);
 
 void			connector(t_parser_data *message_data);
 void			ft_ssl_error(t_error code, void *arg);
