@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 16:33:06 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 20:51:08 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,17 +113,17 @@ uint8_t				*md5(uint8_t *dest_buf, uint8_t *message)
 {
 	t_md5_vector	result_vector;
 	t_md5_vector	calc_vector;
-	t_ssl				msg_data;
+	t_ssl			msg_data;
 
 	init_ssl_structure(&msg_data, message);
-	message_padding_append(&msg_data);
-	message_length_append(&msg_data, msg_data.message_len * 8);
+	message_padding_append(&msg_data, CHUNK512_MODULO, CHUNK512_LEN);
+	message_length_append(&msg_data, msg_data.message_len * 8, sizeof(uint64_t));
 	result_vector = md5_vector_init_default();
-	while ((msg_data.chunk =
-		get_current_chunk(&msg_data, MD5_CHUNK_LEN_BYTES)))
+	while ((msg_data.chunk.chunk32b =
+		(uint32_t *)get_current_chunk(&msg_data, MD5_CHUNK_LEN_BYTES)))
 	{
 		ft_memcpy(&calc_vector, &result_vector, sizeof(t_md5_vector));
-		calc_vector = cycle_calc(msg_data.chunk, calc_vector);
+		calc_vector = cycle_calc(msg_data.chunk.chunk32b, calc_vector);
 		result_vector = vector_add(result_vector, calc_vector);
 	}
 	ft_memcpy(dest_buf, &result_vector, sizeof(t_md5_vector));

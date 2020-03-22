@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:53 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 16:31:26 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 20:51:08 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define C_INIT_VALUE 0x98badcfe;
 # define D_INIT_VALUE 0x10325476;
 
-# define MD5_CHUNK_LEN_BYTES (512 / 8)
+# define MD5_CHUNK_LEN_BYTES (CHUNK512_LEN)
 
 typedef struct		s_md5_result_vector {
 	uint32_t a;

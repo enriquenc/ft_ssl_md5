@@ -1,7 +1,6 @@
 NAME = ft_ssl
 
-SRCNAME	= md5.c connector.c main.c ft_ssl_error_handler.c parser.c sha256.c read_file.c common_part.c sha224.c sha32.c
-
+SRCNAME	= md5.c connector.c main.c ft_ssl_error_handler.c parser.c sha256.c read_file.c common_part.c sha224.c sha32b.c sha64b.c sha512.c
 SRC = $(addprefix src/, $(SRCNAME))
 OBJECT = $(SRC:.c=.o)
 FLAGS  = -Wall -Wextra -Werror

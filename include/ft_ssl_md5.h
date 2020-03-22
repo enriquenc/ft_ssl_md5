@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:49 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 14:18:44 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 20:52:07 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,12 @@
 # define MAX_STRING_ARGUMENT_COUNT 32
 # define MAX_FILE_ARGUMENT_COUNT 32
 
-# define NEEDED_MODULO_BYTES (448 / 8)
-# define DIV_BYTES (512 / 8)
-
 # define LEFT_ROTATE(a, b) (((a) << (b)) | ((a) >> (32 - (b))))
-# define RIGHT_ROTATE(a, b) (((a) >> (b)) | ((a) << (32 - (b))))
+
+# define CHUNK512_MODULO (448 / 8)
+# define CHUNK512_LEN (512 / 8)
+# define CHUNK1024_MODULO (896 / 8)
+# define CHUNK1024_LEN (1024 / 8)
 
 # define FLAG_P (1 << 0)
 # define FLAG_Q (1 << 1)
@@ -34,6 +35,8 @@
 typedef u_int8_t uint8_t;
 typedef u_int32_t uint32_t;
 typedef u_int64_t uint64_t;
+typedef __int128_t uint128_t;
+
 #endif
 
 typedef uint8_t *	(*t_hash_func)(uint8_t *dest_buf, uint8_t *message);
@@ -42,13 +45,20 @@ typedef enum	e_hash_algorithm {
 	MD5,
 	SHA256,
 	SHA224,
+	SHA512,
 	MAX
 }				t_hash_algorithm;
+
+typedef union	chunk
+{
+	uint32_t	*chunk32b;
+	uint64_t	*chunk64b;
+}				t_chunk;
 
 typedef struct	s_ssl {
 	uint8_t		message[MAX_BUFFER_SIZE];
 	uint32_t	current_chunk;
-	uint32_t	*chunk;
+	t_chunk		chunk;
 	size_t		message_len;
 	size_t		padding_len;
 	size_t		full_message_len_bytes;
@@ -64,13 +74,15 @@ typedef struct	s_algorithm {
 
 
 
-void			message_padding_append(t_ssl *message_data);
+void				message_padding_append(t_ssl *message_data,
+							uint8_t modulo, uint8_t need_chunk_length);
 void			message_length_append(t_ssl *message_data,
-												uint64_t bits_len);
+											uint128_t bits_len, uint8_t size);
 uint32_t		swap_int32(const uint32_t value);
 uint64_t		swap_int64(const uint64_t val);
+uint128_t		swap_int128(const uint128_t val);
 
-uint32_t		*get_current_chunk(t_ssl *message_data,
+void			*get_current_chunk(t_ssl *message_data,
 											uint8_t chunk_len_bytes);
 void			init_ssl_structure(t_ssl *message_data, uint8_t *message);
 

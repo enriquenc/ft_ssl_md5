@@ -6,11 +6,34 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/22 14:05:17 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 18:13:58 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 20:51:08 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sha2.h>
+
+# define RROTATE(a, b) (((a) >> (b)) | ((a) << (32 - (b))))
+
+# define BSIG0(x) (RROTATE(x, 2) ^ RROTATE(x, 13) ^ RROTATE(x, 22))
+# define BSIG1(x) (RROTATE(x, 6) ^ RROTATE(x, 11) ^ RROTATE(x, 25))
+# define SSIG0(x) (RROTATE(x, 7) ^ RROTATE(x, 18) ^ ((x) >> 3))
+# define SSIG1(x) (RROTATE(x, 17) ^ RROTATE(x, 19) ^ ((x) >> 10))
+
+static const uint32_t g_precalculated_table[64] = {
+	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b,
+	0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01,
+	0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7,
+	0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
+	0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152,
+	0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
+	0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc,
+	0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+	0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819,
+	0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116, 0x1e376c08,
+	0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f,
+	0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+};
 
 static void	vector_add(t_sha32b_vector *dest, t_sha32b_vector *src)
 {
@@ -24,7 +47,7 @@ static void	vector_add(t_sha32b_vector *dest, t_sha32b_vector *src)
 	dest->h7 += src->h7;
 }
 
-static void	sub_cycle(t_sha2_main_cycle *cycle, t_sha32b_vector *calc_vector)
+static void	sub_cycle(t_sha32b_main_cycle *cycle, t_sha32b_vector *calc_vector)
 {
 	cycle->i = 0;
 	while (cycle->i < 64)
@@ -49,14 +72,14 @@ static void	sub_cycle(t_sha2_main_cycle *cycle, t_sha32b_vector *calc_vector)
 static void	main_cycle(t_ssl *msg_data, t_sha32b_vector *result_vector,
 			t_sha32b_vector *calc_vector)
 {
-	t_sha2_main_cycle cycle;
+	t_sha32b_main_cycle cycle;
 
-	while ((msg_data->chunk = get_current_chunk(msg_data,
-									SHA2_CHUNK_LEN_BYTES)))
+	while ((msg_data->chunk.chunk32b = (uint32_t *)get_current_chunk(msg_data,
+									SHA32B_CHUNK_LEN_BYTES)))
 	{
 		cycle.i = -1;
 		while (++cycle.i < 16)
-			cycle.w[cycle.i] = swap_int32(msg_data->chunk[cycle.i]);
+			cycle.w[cycle.i] = swap_int32(msg_data->chunk.chunk32b[cycle.i]);
 		while (cycle.i < 64)
 		{
 			cycle.w[cycle.i] = SSIG1(cycle.w[cycle.i - 2]) +
@@ -77,8 +100,9 @@ void		sha32b(uint8_t *message, t_sha32b_vector *result_vector)
 	int					i;
 
 	init_ssl_structure(&msg_data, message);
-	message_padding_append(&msg_data);
-	message_length_append(&msg_data, swap_int64(msg_data.message_len * 8));
+	message_padding_append(&msg_data, CHUNK512_MODULO, CHUNK512_LEN);
+	message_length_append(&msg_data, msg_data.message_len * 8,
+							sizeof(uint64_t));
 	main_cycle(&msg_data, result_vector, &calc_vector);
 	i = -1;
 	while (++i < 8)
