@@ -6,12 +6,12 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/19 23:30:50 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 16:33:06 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <md5.h>
-#include <connector.h>
+#include <parser.h>
 
 static uint8_t g_s[64] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
@@ -46,9 +46,9 @@ static uint32_t g_table[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
-t_md5_result_vector	md5_vector_init_default(void)
+static t_md5_vector	md5_vector_init_default(void)
 {
-	t_md5_result_vector init;
+	t_md5_vector init;
 
 	init.a = A_INIT_VALUE;
 	init.b = B_INIT_VALUE;
@@ -57,8 +57,7 @@ t_md5_result_vector	md5_vector_init_default(void)
 	return (init);
 }
 
-t_md5_result_vector	md5_vector_add(t_md5_result_vector dest,
-										t_md5_result_vector src)
+static t_md5_vector	vector_add(t_md5_vector dest, t_md5_vector src)
 {
 	dest.a += src.a;
 	dest.b += src.b;
@@ -67,8 +66,7 @@ t_md5_result_vector	md5_vector_add(t_md5_result_vector dest,
 	return (dest);
 }
 
-void				md5_rounds(t_md5_cycle_variables *var,
-								t_md5_result_vector calc_vector)
+static void			md5_rounds(t_md5_cycle *var, t_md5_vector calc_vector)
 {
 	if (var->i < 16)
 	{
@@ -93,10 +91,9 @@ void				md5_rounds(t_md5_cycle_variables *var,
 }
 
 
-t_md5_result_vector	md5_cycle_calculation(uint32_t *chunk,
-							t_md5_result_vector calc_vector)
+static t_md5_vector	cycle_calc(uint32_t *chunk, t_md5_vector calc_vector)
 {
-	t_md5_cycle_variables var;
+	t_md5_cycle var;
 
 	var.i = 0;
 	while (var.i < 64)
@@ -114,8 +111,8 @@ t_md5_result_vector	md5_cycle_calculation(uint32_t *chunk,
 
 uint8_t				*md5(uint8_t *dest_buf, uint8_t *message)
 {
-	t_md5_result_vector	result_vector;
-	t_md5_result_vector	calc_vector;
+	t_md5_vector	result_vector;
+	t_md5_vector	calc_vector;
 	t_ssl				msg_data;
 
 	init_ssl_structure(&msg_data, message);
@@ -125,10 +122,10 @@ uint8_t				*md5(uint8_t *dest_buf, uint8_t *message)
 	while ((msg_data.chunk =
 		get_current_chunk(&msg_data, MD5_CHUNK_LEN_BYTES)))
 	{
-		ft_memcpy(&calc_vector, &result_vector, sizeof(t_md5_result_vector));
-		calc_vector = md5_cycle_calculation(msg_data.chunk, calc_vector);
-		result_vector = md5_vector_add(result_vector, calc_vector);
+		ft_memcpy(&calc_vector, &result_vector, sizeof(t_md5_vector));
+		calc_vector = cycle_calc(msg_data.chunk, calc_vector);
+		result_vector = vector_add(result_vector, calc_vector);
 	}
-	ft_memcpy(dest_buf, &result_vector, sizeof(t_md5_result_vector));
+	ft_memcpy(dest_buf, &result_vector, sizeof(t_md5_vector));
 	return (dest_buf);
 }

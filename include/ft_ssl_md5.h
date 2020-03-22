@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:49 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/17 23:51:49 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 14:18:44 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,12 @@ typedef u_int32_t uint32_t;
 typedef u_int64_t uint64_t;
 #endif
 
+typedef uint8_t *	(*t_hash_func)(uint8_t *dest_buf, uint8_t *message);
+
 typedef enum	e_hash_algorithm {
 	MD5,
 	SHA256,
+	SHA224,
 	MAX
 }				t_hash_algorithm;
 
@@ -51,6 +54,24 @@ typedef struct	s_ssl {
 	size_t		full_message_len_bytes;
 }				t_ssl;
 
-typedef uint8_t *	(*t_hash_func)(uint8_t *dest_buf, uint8_t *message);
+typedef struct	s_algorithm {
+	char				name[24];
+	t_hash_algorithm	num;
+	t_hash_func			func;
+	uint8_t				hash_size_bytes;
+}				t_algorithm;
+
+
+
+
+void			message_padding_append(t_ssl *message_data);
+void			message_length_append(t_ssl *message_data,
+												uint64_t bits_len);
+uint32_t		swap_int32(const uint32_t value);
+uint64_t		swap_int64(const uint64_t val);
+
+uint32_t		*get_current_chunk(t_ssl *message_data,
+											uint8_t chunk_len_bytes);
+void			init_ssl_structure(t_ssl *message_data, uint8_t *message);
 
 #endif

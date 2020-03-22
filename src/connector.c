@@ -6,13 +6,13 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:34:40 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/15 02:08:22 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 16:29:51 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <connector.h>
+#include <parser.h>
 
-void		digest_to_hex_string(uint8_t *hex_str_buf, uint8_t *digest,
+static void	digest_to_hex_string(uint8_t *hex_str_buf, uint8_t *digest,
 																int len)
 {
 	int		i;
@@ -34,7 +34,7 @@ void		digest_to_hex_string(uint8_t *hex_str_buf, uint8_t *digest,
 	hex_str_buf[hex_string_size] = 0;
 }
 
-void		from_stdin_encryption(t_parser_data *parsed, uint8_t *buf,
+static void	from_stdin_encryption(t_parser_data *parsed, uint8_t *buf,
 													uint8_t *digest)
 {
 	read_from_descriptor(buf, 0);
@@ -45,7 +45,7 @@ void		from_stdin_encryption(t_parser_data *parsed, uint8_t *buf,
 	ft_printf("%s\n", buf);
 }
 
-void		from_s_argument_encrypt(t_parser_data *parsed, uint8_t *src,
+static void	from_s_argument_encrypt(t_parser_data *parsed, uint8_t *src,
 											uint8_t *buf, uint8_t *digest)
 {
 	parsed->algorithm.func(digest, src);
@@ -58,7 +58,7 @@ void		from_s_argument_encrypt(t_parser_data *parsed, uint8_t *src,
 		ft_printf("%s\n", buf);
 }
 
-void		from_file_encryption(t_parser_data *parsed, char *file,
+static void	from_file_encryption(t_parser_data *parsed, char *file,
 											uint8_t *buf, uint8_t *digest)
 {
 	parsed->algorithm.func(digest, buf);

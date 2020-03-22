@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:53 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/19 23:31:16 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 16:31:26 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ typedef struct		s_md5_result_vector {
 	uint32_t b;
 	uint32_t c;
 	uint32_t d;
-}					t_md5_result_vector;
+}					t_md5_vector;
 
 typedef struct		s_md5_cycle_variables {
 	uint8_t		i;
 	uint32_t	f;
 	uint32_t	g;
-}					t_md5_cycle_variables;
+}					t_md5_cycle;
 
 #endif

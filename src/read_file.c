@@ -6,11 +6,11 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/08 00:55:57 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 00:56:50 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 13:37:42 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <connector.h>
+#include <parser.h>
 #include <fcntl.h>
 
 void		read_from_descriptor(uint8_t *dest, int fd)

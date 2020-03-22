@@ -6,11 +6,11 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/08 00:58:36 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/19 23:42:48 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/22 16:29:18 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <connector.h>
+#include <parser.h>
 
 /*
 ** Array used to append padding to the message,
@@ -19,7 +19,7 @@
 ** (len_in_bits(message) % 512 == 488)
 */
 
-uint8_t g_padding[64] = {
+static uint8_t g_padding[64] = {
 	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
