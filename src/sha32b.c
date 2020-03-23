@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/22 14:05:17 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 20:51:08 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/23 23:37:17 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void		sha32b(uint8_t *message, t_sha32b_vector *result_vector)
 
 	init_ssl_structure(&msg_data, message);
 	message_padding_append(&msg_data, CHUNK512_MODULO, CHUNK512_LEN);
-	message_length_append(&msg_data, msg_data.message_len * 8,
+	message_length_append(&msg_data, swap_int64(msg_data.message_len * 8),
 							sizeof(uint64_t));
 	main_cycle(&msg_data, result_vector, &calc_vector);
 	i = -1;
