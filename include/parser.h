@@ -13,7 +13,9 @@
 #ifndef CONNECTOR_H
 # define CONNECTOR_H
 
-# include <ft_ssl_md5.h>
+# include <my_openssl.h>
+# include <hash_functions.h>
+# include <libft.h>
 
 typedef enum	e_error {
 	USAGE,
@@ -29,17 +31,12 @@ typedef struct	s_parser_data {
 	t_algorithm			algorithm;
 }				t_parser_data;
 
-uint8_t			*md5(uint8_t *dest_buf, uint8_t *message);
-uint8_t			*sha256(uint8_t *dest_buf, uint8_t *message);
-uint8_t			*sha224(uint8_t *dest_buf, uint8_t *message);
-uint8_t			*sha512(uint8_t *dest_buf, uint8_t *message);
-uint8_t			*sha384(uint8_t *dest_buf, uint8_t *message);
-
 void			connector(t_parser_data *message_data);
 void			ft_ssl_error(t_error code, void *arg);
 t_parser_data	parser(int argc, char **argv);
 uint8_t			get_file_content(uint8_t *dest, char *file_name);
 void			read_from_descriptor(uint8_t *dest, int fd);
 
+extern t_algorithm g_algorithms[ALGORITHM_AMOUNT];
 
 #endif

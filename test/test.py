@@ -26,7 +26,7 @@ hash_test('1')
 hash_test('123r4rurjiro3r4tgh')
 hash_test('yihurio0783903459884930495849034958thugjikjbfekdofijdskodskjofjkjfbhvjfljkfkjlfkjjgfjk')
 hash_test('#pragma once\
-#include <ft_ssl_md5.h>\
+#include <my_openssl.h>\
 \
 # define F(B, C, D) 			((B) & (C)) | (~(B) & (D))\
 # define G(B, C, D) 			((B) & (D)) | ((C) & ~(D))\

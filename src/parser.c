@@ -6,18 +6,19 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/23 00:52:22 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/24 00:20:46 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <hash_functions.h>
 #include <parser.h>
 
-t_algorithm g_algorithms[MAX] = {
-	{.name = "md5", .num = MD5, .func = md5, .hash_size_bytes = 16},
-	{.name = "sha256", .num = SHA256, .func = sha256, .hash_size_bytes = 256 / 8},
-	{.name = "sha224", .num = SHA224, .func = sha224, .hash_size_bytes = 224 / 8},
-	{.name = "sha512", .num = SHA512, .func = sha512, .hash_size_bytes = 512 / 8},
-	{.name = "sha384", .num = SHA384, .func = sha384, .hash_size_bytes = 384 / 8}
+t_algorithm g_algorithms[ALGORITHM_AMOUNT] = {
+	{.name = "md5", .func = md5, .hash_size_bytes = 16},
+	{.name = "sha256", .func = sha256, .hash_size_bytes = 256 / 8},
+	{.name = "sha224", .func = sha224, .hash_size_bytes = 224 / 8},
+	{.name = "sha512", .func = sha512, .hash_size_bytes = 512 / 8},
+	{.name = "sha384", .func = sha384, .hash_size_bytes = 384 / 8}
 };
 
 
@@ -26,7 +27,7 @@ t_algorithm			parser_algorithm_get(char *command)
 	uint8_t i;
 
 	i = 0;
-	while (i < MAX)
+	while (i < ALGORITHM_AMOUNT)
 	{
 		if (ft_strequ((const char *)g_algorithms[i].name, command))
 		{

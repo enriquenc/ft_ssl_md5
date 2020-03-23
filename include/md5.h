@@ -6,13 +6,13 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:53 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 20:51:08 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/24 00:09:03 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MD5_H
 # define MD5_H
-# include <ft_ssl_md5.h>
+# include <my_openssl.h>
 
 # define F(B, C, D) ((B) & (C)) | (~(B) & (D))
 # define G(B, C, D) ((B) & (D)) | ((C) & ~(D))

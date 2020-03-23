@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 17:51:00 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 20:52:04 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/24 00:09:03 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #ifndef SHA2_H
 # define SHA2_H
 
-# include <ft_ssl_md5.h>
+# include <my_openssl.h>
 
 # define CH(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
 # define MAJ(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
