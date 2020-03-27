@@ -6,12 +6,14 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/22 21:02:28 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/23 00:46:45 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:04:47 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHA385_H
 # define SHA385_H
+
+# include <sha2.h>
 
 # define SHA384_H0_INIT_VALUE 0xcbbb9d5dc1059ed8;
 # define SHA384_H1_INIT_VALUE 0x629a292a367cd507;

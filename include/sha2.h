@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 17:51:00 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/24 00:09:03 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:16:09 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,7 @@
 # define CH(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
 # define MAJ(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
 
-# define SHA32B_CHUNK_LEN_BYTES (CHUNK512_LEN)
-# define SHA64B_CHUNK_LEN_BYTES (CHUNK1024_LEN)
-
-typedef struct		s_sha32b_vector {
+typedef struct	__attribute__ ((packed))	s_sha32b_vector {
 	uint32_t h0;
 	uint32_t h1;
 	uint32_t h2;
@@ -35,9 +32,9 @@ typedef struct		s_sha32b_vector {
 	uint32_t h5;
 	uint32_t h6;
 	uint32_t h7;
-}					t_sha32b_vector;
+}											t_sha32b_vector;
 
-typedef struct		s_sha64b_vector {
+typedef struct	__attribute__ ((packed))	s_sha64b_vector  {
 	uint64_t h0;
 	uint64_t h1;
 	uint64_t h2;
@@ -46,7 +43,7 @@ typedef struct		s_sha64b_vector {
 	uint64_t h5;
 	uint64_t h6;
 	uint64_t h7;
-}					t_sha64b_vector;
+}											t_sha64b_vector;
 
 typedef struct		s_sha32b_main_cycle {
 	uint8_t		i;

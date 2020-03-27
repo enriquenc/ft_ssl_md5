@@ -6,11 +6,11 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/08 00:58:36 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/23 23:15:30 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:17:29 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <my_openssl.h>
 
 /*
 ** Array used to append padding to the message,
@@ -38,7 +38,7 @@ void				init_ssl_structure(t_ssl *message_data, uint8_t *msg)
 {
 	message_data->current_chunk = 0;
 	message_data->padding_len = 0;
-	message_data->chunk.chunk64b = NULL;
+	message_data->chunk.chunk64 = NULL;
 	message_data->message_len = ft_strlen((const char *)msg);
 	ft_memcpy(message_data->message, msg, message_data->message_len + 1);
 }
@@ -60,7 +60,7 @@ void			*get_current_chunk(t_ssl *message_data,
 void				message_length_append(t_ssl *message_data,
 										uint128_t bits_len, uint8_t size)
 {
-	memcpy(message_data->message + message_data->message_len +
+	ft_memcpy(message_data->message + message_data->message_len +
 						message_data->padding_len, &bits_len, size);
 	message_data->full_message_len_bytes = message_data->message_len
 								+ message_data->padding_len + size;
