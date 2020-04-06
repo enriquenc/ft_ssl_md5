@@ -21,7 +21,7 @@ t_algorithm g_algorithms[ALGORITHM_AMOUNT] = {
 };
 
 
-t_algorithm			parser_algorithm_get(char *command)
+static t_algorithm		parser_algorithm_get(char *command)
 {
 	uint8_t i;
 
@@ -38,7 +38,7 @@ t_algorithm			parser_algorithm_get(char *command)
 	return (g_algorithms[0]);
 }
 
-void				parser_options(t_parser_data *parsed_data,
+static void				parser_options(t_parser_data *parsed_data,
 											char *current_arg)
 {
 	if (current_arg[1] == 'p')
@@ -55,7 +55,7 @@ void				parser_options(t_parser_data *parsed_data,
 		ft_ssl_error(INVALID_OPTION, current_arg + 1);
 }
 
-void				parser_files(t_parser_data *parsed_data,
+static void				parser_files(t_parser_data *parsed_data,
 										int argc, char **argv)
 {
 	int files_count;
@@ -69,7 +69,7 @@ void				parser_files(t_parser_data *parsed_data,
 	}
 }
 
-void				parser_all_args_get(t_parser_data *parsed_data,
+static void				parser_all_args_get(t_parser_data *parsed_data,
 												int argc, char **argv)
 {
 	int		s_count;
