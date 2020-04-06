@@ -35,7 +35,7 @@
  *
  * @param message User message to be hashed.
  *
- * @return uint8_t* encrypted message in dest_buf
+ * @return uint8_t* encrypted message in dest_buf.
  */
 uint8_t			*md5(uint8_t *dest_buf, uint8_t *message);
 
@@ -53,7 +53,7 @@ uint8_t			*md5(uint8_t *dest_buf, uint8_t *message);
  *
  * @param message User message to be hashed.
  *
- * @return uint8_t* encrypted message in dest_buf
+ * @return uint8_t* encrypted message in dest_buf.
  */
 uint8_t			*sha256(uint8_t *dest_buf, uint8_t *message);
 
@@ -71,10 +71,35 @@ uint8_t			*sha256(uint8_t *dest_buf, uint8_t *message);
  *
  * @param message User message to be hashed.
  *
- * @return uint8_t* encrypted message in dest_buf
+ * @return uint8_t* encrypted message in dest_buf.
  */
 uint8_t			*sha224(uint8_t *dest_buf, uint8_t *message);
+
+/**
+ * @brief SHA-256 and SHA-512 are novel hash functions computed with 32-bit
+ *  and 64-bit words, respectively. They use different shift amounts and
+ * additive constants, but their structures are otherwise virtually identical,
+ * differing only in the number of rounds.
+ *
+ * @param dest_buf Destination buffer to store sha512 message digest.
+ * @param message User message to be hashed.
+ * @return uint8_t* encrypted message in dest_buf.
+ */
 uint8_t			*sha512(uint8_t *dest_buf, uint8_t *message);
+
+/**
+ * @brief SHA-384 is defined in the exact same manner as SHA-256, with the
+ * following two exceptions:
+ *    - First, for SHA-384, the initial hash values ​​of eight 64-bit working
+ * variables use different values.
+ *    - Second, SHA-384 simply makes use of the first seven 64-bit words
+ * in the SHA-512 result, discarding the remaining 64-bit words in
+ * the SHA-256 result.
+ *
+ * @param dest_buf Destination buffer to store sha512 message digest.
+ * @param message User message to be hashed.
+ * @return uint8_t* encrypted message in dest_buf.
+ */
 uint8_t			*sha384(uint8_t *dest_buf, uint8_t *message);
 
 
