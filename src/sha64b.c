@@ -6,18 +6,16 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/22 18:12:18 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 20:52:04 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:17:29 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sha2.h>
 
-# define RROTATE(a, b) (((a) >> (b)) | ((a) << (64 - (b))))
-
-# define BSIG0(x) (RROTATE(x, 28) ^ RROTATE(x, 34) ^ RROTATE(x, 39))
-# define BSIG1(x) (RROTATE(x, 14) ^ RROTATE(x, 18) ^ RROTATE(x, 41))
-# define SSIG0(x) (RROTATE(x, 1) ^ RROTATE(x, 8) ^ ((x) >> 7))
-# define SSIG1(x) (RROTATE(x, 19) ^ RROTATE(x, 61) ^ ((x) >> 6))
+# define BSIG0(x) (RROTATE64(x, 28) ^ RROTATE64(x, 34) ^ RROTATE64(x, 39))
+# define BSIG1(x) (RROTATE64(x, 14) ^ RROTATE64(x, 18) ^ RROTATE64(x, 41))
+# define SSIG0(x) (RROTATE64(x, 1) ^ RROTATE64(x, 8) ^ ((x) >> 7))
+# define SSIG1(x) (RROTATE64(x, 19) ^ RROTATE64(x, 61) ^ ((x) >> 6))
 
 static const uint64_t g_precalculated_table[80] = {
 	0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
@@ -81,12 +79,12 @@ static void	main_cycle(t_ssl *msg_data, t_sha64b_vector *result_vector,
 {
 	t_sha64b_main_cycle cycle;
 
-	while ((msg_data->chunk.chunk64b = (uint64_t *)get_current_chunk(msg_data,
-									SHA64B_CHUNK_LEN_BYTES)))
+	while ((msg_data->chunk.chunk64 = (uint64_t *)get_current_chunk(msg_data,
+									CHUNK1024_LEN)))
 	{
 		cycle.i = -1;
 		while (++cycle.i < 16)
-			cycle.w[cycle.i] = swap_int64(msg_data->chunk.chunk64b[cycle.i]);
+			cycle.w[cycle.i] = swap_int64(msg_data->chunk.chunk64[cycle.i]);
 		while (cycle.i < 80)
 		{
 			cycle.w[cycle.i] = SSIG1(cycle.w[cycle.i - 2]) +
@@ -94,7 +92,7 @@ static void	main_cycle(t_ssl *msg_data, t_sha64b_vector *result_vector,
 				cycle.w[cycle.i - 16];
 			cycle.i++;
 		}
-		memcpy(calc_vector, result_vector, sizeof(t_sha64b_vector));
+		ft_memcpy(calc_vector, result_vector, sizeof(t_sha64b_vector));
 		sub_cycle(&cycle, calc_vector);
 		vector_add(result_vector, calc_vector);
 	}

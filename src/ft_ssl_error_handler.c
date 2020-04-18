@@ -6,13 +6,11 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:24 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 16:30:08 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/24 00:21:03 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <parser.h>
-
-extern t_algorithm g_algorithms[MAX];
 
 static void	print_valid_commands(void)
 {
@@ -20,7 +18,7 @@ static void	print_valid_commands(void)
 
 	i = 0;
 	ft_printf("Message Digest commands:\n");
-	while (i < MAX)
+	while (i < ALGORITHM_AMOUNT)
 		ft_printf("%s\n", g_algorithms[i++].name);
 }
 

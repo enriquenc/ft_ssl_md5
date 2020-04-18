@@ -6,18 +6,16 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/22 14:05:17 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/23 23:37:17 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:17:22 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sha2.h>
 
-# define RROTATE(a, b) (((a) >> (b)) | ((a) << (32 - (b))))
-
-# define BSIG0(x) (RROTATE(x, 2) ^ RROTATE(x, 13) ^ RROTATE(x, 22))
-# define BSIG1(x) (RROTATE(x, 6) ^ RROTATE(x, 11) ^ RROTATE(x, 25))
-# define SSIG0(x) (RROTATE(x, 7) ^ RROTATE(x, 18) ^ ((x) >> 3))
-# define SSIG1(x) (RROTATE(x, 17) ^ RROTATE(x, 19) ^ ((x) >> 10))
+# define BSIG0(x) (RROTATE32(x, 2) ^ RROTATE32(x, 13) ^ RROTATE32(x, 22))
+# define BSIG1(x) (RROTATE32(x, 6) ^ RROTATE32(x, 11) ^ RROTATE32(x, 25))
+# define SSIG0(x) (RROTATE32(x, 7) ^ RROTATE32(x, 18) ^ ((x) >> 3))
+# define SSIG1(x) (RROTATE32(x, 17) ^ RROTATE32(x, 19) ^ ((x) >> 10))
 
 static const uint32_t g_precalculated_table[64] = {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b,
@@ -74,12 +72,12 @@ static void	main_cycle(t_ssl *msg_data, t_sha32b_vector *result_vector,
 {
 	t_sha32b_main_cycle cycle;
 
-	while ((msg_data->chunk.chunk32b = (uint32_t *)get_current_chunk(msg_data,
-									SHA32B_CHUNK_LEN_BYTES)))
+	while ((msg_data->chunk.chunk32 = (uint32_t *)get_current_chunk(msg_data,
+									CHUNK512_LEN)))
 	{
 		cycle.i = -1;
 		while (++cycle.i < 16)
-			cycle.w[cycle.i] = swap_int32(msg_data->chunk.chunk32b[cycle.i]);
+			cycle.w[cycle.i] = swap_int32(msg_data->chunk.chunk32[cycle.i]);
 		while (cycle.i < 64)
 		{
 			cycle.w[cycle.i] = SSIG1(cycle.w[cycle.i - 2]) +
@@ -87,7 +85,7 @@ static void	main_cycle(t_ssl *msg_data, t_sha32b_vector *result_vector,
 				cycle.w[cycle.i - 16];
 			cycle.i++;
 		}
-		memcpy(calc_vector, result_vector, sizeof(t_sha32b_vector));
+		ft_memcpy(calc_vector, result_vector, sizeof(t_sha32b_vector));
 		sub_cycle(&cycle, calc_vector);
 		vector_add(result_vector, calc_vector);
 	}

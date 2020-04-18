@@ -6,11 +6,10 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/22 13:35:10 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 18:59:17 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:04:31 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sha2.h>
 #include <sha224.h>
 
 static void		vector_init_default(t_sha32b_vector *dest)

@@ -6,13 +6,13 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:53 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 20:51:08 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:14:15 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MD5_H
 # define MD5_H
-# include <ft_ssl_md5.h>
+# include <my_openssl.h>
 
 # define F(B, C, D) ((B) & (C)) | (~(B) & (D))
 # define G(B, C, D) ((B) & (D)) | ((C) & ~(D))
@@ -24,15 +24,20 @@
 # define C_INIT_VALUE 0x98badcfe;
 # define D_INIT_VALUE 0x10325476;
 
-# define MD5_CHUNK_LEN_BYTES (CHUNK512_LEN)
-
-typedef struct		s_md5_result_vector {
+/**
+ * @brief 32bit vector used to compute and store the intermediate hash value.
+ */
+typedef struct	__attribute__ ((packed))	s_md5_result_vector {
 	uint32_t a;
 	uint32_t b;
 	uint32_t c;
 	uint32_t d;
-}					t_md5_vector;
+}											t_md5_vector;
 
+/**
+ * @brief Used to store values of main md5 cycle.
+ * This shit exists to satisfy the Norminette.
+ */
 typedef struct		s_md5_cycle_variables {
 	uint8_t		i;
 	uint32_t	f;

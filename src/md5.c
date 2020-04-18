@@ -6,12 +6,12 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:33:08 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 20:51:08 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:17:22 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <md5.h>
-#include <parser.h>
+#include <libft.h>
 
 static uint8_t g_s[64] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
@@ -103,7 +103,7 @@ static t_md5_vector	cycle_calc(uint32_t *chunk, t_md5_vector calc_vector)
 		calc_vector.a = calc_vector.d;
 		calc_vector.d = calc_vector.c;
 		calc_vector.c = calc_vector.b;
-		calc_vector.b = calc_vector.b + LEFT_ROTATE(var.f, g_s[var.i]);
+		calc_vector.b = calc_vector.b + LROTATE32(var.f, g_s[var.i]);
 		var.i++;
 	}
 	return (calc_vector);
@@ -119,11 +119,11 @@ uint8_t				*md5(uint8_t *dest_buf, uint8_t *message)
 	message_padding_append(&msg_data, CHUNK512_MODULO, CHUNK512_LEN);
 	message_length_append(&msg_data, msg_data.message_len * 8, sizeof(uint64_t));
 	result_vector = md5_vector_init_default();
-	while ((msg_data.chunk.chunk32b =
-		(uint32_t *)get_current_chunk(&msg_data, MD5_CHUNK_LEN_BYTES)))
+	while ((msg_data.chunk.chunk32 =
+		(uint32_t *)get_current_chunk(&msg_data, CHUNK512_LEN)))
 	{
 		ft_memcpy(&calc_vector, &result_vector, sizeof(t_md5_vector));
-		calc_vector = cycle_calc(msg_data.chunk.chunk32b, calc_vector);
+		calc_vector = cycle_calc(msg_data.chunk.chunk32, calc_vector);
 		result_vector = vector_add(result_vector, calc_vector);
 	}
 	ft_memcpy(dest_buf, &result_vector, sizeof(t_md5_vector));

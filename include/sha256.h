@@ -6,12 +6,14 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 19:21:10 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/08 03:11:15 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:04:55 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHA256_H
 # define SHA256_H
+
+# include <sha2.h>
 
 # define SHA256_H0_INIT_VALUE 0x6A09E667;
 # define SHA256_H1_INIT_VALUE 0xBB67AE85;

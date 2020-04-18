@@ -6,12 +6,14 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/22 18:57:19 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 18:57:22 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:04:41 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHA512_H
 # define SHA512_H
+
+# include <sha2.h>
 
 # define SHA512_H0_INIT_VALUE 0x6a09e667f3bcc908;
 # define SHA512_H1_INIT_VALUE 0xbb67ae8584caa73b;

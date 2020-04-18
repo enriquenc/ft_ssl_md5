@@ -6,27 +6,27 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/23 00:52:22 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/28 00:00:58 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <parser.h>
 
-t_algorithm g_algorithms[MAX] = {
-	{.name = "md5", .num = MD5, .func = md5, .hash_size_bytes = 16},
-	{.name = "sha256", .num = SHA256, .func = sha256, .hash_size_bytes = 256 / 8},
-	{.name = "sha224", .num = SHA224, .func = sha224, .hash_size_bytes = 224 / 8},
-	{.name = "sha512", .num = SHA512, .func = sha512, .hash_size_bytes = 512 / 8},
-	{.name = "sha384", .num = SHA384, .func = sha384, .hash_size_bytes = 384 / 8}
+t_algorithm g_algorithms[ALGORITHM_AMOUNT] = {
+	{.name = "md5", .hash_function = md5, .hash_size_bytes = 16},
+	{.name = "sha256", .hash_function = sha256, .hash_size_bytes = 256 / 8},
+	{.name = "sha224", .hash_function = sha224, .hash_size_bytes = 224 / 8},
+	{.name = "sha512", .hash_function = sha512, .hash_size_bytes = 512 / 8},
+	{.name = "sha384", .hash_function = sha384, .hash_size_bytes = 384 / 8}
 };
 
 
-t_algorithm			parser_algorithm_get(char *command)
+static t_algorithm		parser_algorithm_get(char *command)
 {
 	uint8_t i;
 
 	i = 0;
-	while (i < MAX)
+	while (i < ALGORITHM_AMOUNT)
 	{
 		if (ft_strequ((const char *)g_algorithms[i].name, command))
 		{
@@ -38,7 +38,7 @@ t_algorithm			parser_algorithm_get(char *command)
 	return (g_algorithms[0]);
 }
 
-void				parser_options(t_parser_data *parsed_data,
+static void				parser_options(t_parser_data *parsed_data,
 											char *current_arg)
 {
 	if (current_arg[1] == 'p')
@@ -55,7 +55,7 @@ void				parser_options(t_parser_data *parsed_data,
 		ft_ssl_error(INVALID_OPTION, current_arg + 1);
 }
 
-void				parser_files(t_parser_data *parsed_data,
+static void				parser_files(t_parser_data *parsed_data,
 										int argc, char **argv)
 {
 	int files_count;
@@ -69,7 +69,7 @@ void				parser_files(t_parser_data *parsed_data,
 	}
 }
 
-void				parser_all_args_get(t_parser_data *parsed_data,
+static void				parser_all_args_get(t_parser_data *parsed_data,
 												int argc, char **argv)
 {
 	int		s_count;

@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:34:40 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/22 16:29:51 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/03/27 23:39:27 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	from_stdin_encryption(t_parser_data *parsed, uint8_t *buf,
 													uint8_t *digest)
 {
 	read_from_descriptor(buf, 0);
-	parsed->algorithm.func(digest, buf);
+	parsed->algorithm.hash_function(digest, buf);
 	if (parsed->options & FLAG_P)
 		ft_printf("%s", buf);
 	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
@@ -48,7 +48,7 @@ static void	from_stdin_encryption(t_parser_data *parsed, uint8_t *buf,
 static void	from_s_argument_encrypt(t_parser_data *parsed, uint8_t *src,
 											uint8_t *buf, uint8_t *digest)
 {
-	parsed->algorithm.func(digest, src);
+	parsed->algorithm.hash_function(digest, src);
 	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
 	if (!(parsed->options & FLAG_Q) && !(parsed->options & FLAG_R))
 		ft_printf("%s (\"%s\") = %s\n", parsed->algorithm.name, src, buf);
@@ -61,7 +61,7 @@ static void	from_s_argument_encrypt(t_parser_data *parsed, uint8_t *src,
 static void	from_file_encryption(t_parser_data *parsed, char *file,
 											uint8_t *buf, uint8_t *digest)
 {
-	parsed->algorithm.func(digest, buf);
+	parsed->algorithm.hash_function(digest, buf);
 	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
 	if (!(parsed->options & FLAG_Q) && !(parsed->options & FLAG_R))
 		ft_printf("%s (%s) = %s\n", parsed->algorithm.name, file, buf);
