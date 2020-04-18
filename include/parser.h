@@ -17,14 +17,6 @@
 # include <hash_functions.h>
 
 /**
- * @brief Realization of the programm flags to use only 1 byte of memory.
- */
-# define FLAG_P (1 << 0)
-# define FLAG_Q (1 << 1)
-# define FLAG_R (1 << 2)
-# define FLAG_S (1 << 3)
-
-/**
  * @brief Global error codes.
  */
 typedef enum	e_error {
@@ -44,6 +36,42 @@ typedef struct	s_parser_data {
 	char				*files_data[MAX_FILE_ARGUMENT_COUNT]; /* store all inputed filenames */
 	t_algorithm			algorithm; /* store the infromation of choosen algorithm */
 }				t_parser_data;
+
+/**
+ * @brief Realization of the programm flags to use only 1 byte of memory.
+ */
+# define FLAG_P (1 << 0)
+# define FLAG_Q (1 << 1)
+# define FLAG_R (1 << 2)
+# define FLAG_S (1 << 3)
+
+/**
+ * @brief Amount of flags in the program.
+ * Should be updated always when add new flag.
+ */
+# define FLAGS_AMOUNT 4
+
+/**
+ * @brief Describe each of program flags.
+ * Helps to simplify parsing of flags and system scaling.
+ */
+typedef struct	s_flag {
+	char	description[64];
+	uint8_t	mask;
+	char	name;
+}				t_flag;
+
+/**
+ * @brief Global array of structures that keeps all necessary data
+ * about all the program falgs.
+ */
+extern t_flag g_flags[FLAGS_AMOUNT];
+
+/**
+ * @brief Global array of structures that keeps all necessary data
+ * about all the algorithms in the program.
+ */
+extern t_algorithm g_algorithms[ALGORITHM_AMOUNT];
 
 /**
  * @brief This function executes all that was requested by the user using
@@ -86,7 +114,5 @@ uint8_t			get_file_content(uint8_t *dest, char *file_name);
  * @param fd File descriptor.
  */
 void			read_from_descriptor(uint8_t *dest, int fd);
-
-extern t_algorithm g_algorithms[ALGORITHM_AMOUNT];
 
 #endif

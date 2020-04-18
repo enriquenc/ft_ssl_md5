@@ -11,6 +11,8 @@ def md5_test(text):
 		print("OK")
 	else:
 		print("ERROR")
+		print("org: " + org)
+		print("my: " + my)
 
 
 def hash_test(text):
