@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:34:40 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/27 23:39:27 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/04/18 22:58:42 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,12 @@ static void	from_stdin_encryption(t_parser_data *parsed, uint8_t *buf,
 	if (parsed->options & FLAG_P)
 		ft_printf("%s", buf);
 	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
-	ft_printf("%s\n", buf);
+	if (!(parsed->options & (FLAG_Q | FLAG_R)))
+		ft_printf("%s (stdin) = %s\n", parsed->algorithm.name, buf);
+	else if (!(parsed->options & FLAG_Q))
+		ft_printf("%s stdin\n", buf);
+	else
+		ft_printf("%s\n", buf);
 }
 
 static void	from_s_argument_encrypt(t_parser_data *parsed, uint8_t *src,
@@ -50,9 +55,9 @@ static void	from_s_argument_encrypt(t_parser_data *parsed, uint8_t *src,
 {
 	parsed->algorithm.hash_function(digest, src);
 	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
-	if (!(parsed->options & FLAG_Q) && !(parsed->options & FLAG_R))
+	if (!(parsed->options & (FLAG_Q | FLAG_R)))
 		ft_printf("%s (\"%s\") = %s\n", parsed->algorithm.name, src, buf);
-	else if (!(parsed->options & FLAG_Q) && parsed->options & FLAG_R)
+	else if (!(parsed->options & FLAG_Q))
 		ft_printf("%s \"%s\"\n", buf, src);
 	else
 		ft_printf("%s\n", buf);
@@ -63,9 +68,9 @@ static void	from_file_encryption(t_parser_data *parsed, char *file,
 {
 	parsed->algorithm.hash_function(digest, buf);
 	digest_to_hex_string(buf, digest, parsed->algorithm.hash_size_bytes);
-	if (!(parsed->options & FLAG_Q) && !(parsed->options & FLAG_R))
+	if (!(parsed->options & (FLAG_Q | FLAG_R)))
 		ft_printf("%s (%s) = %s\n", parsed->algorithm.name, file, buf);
-	else if (!(parsed->options & FLAG_Q) && parsed->options & FLAG_R)
+	else if (!(parsed->options & FLAG_Q))
 		ft_printf("%s %s\n", buf, file);
 	else
 		ft_printf("%s\n", buf);
