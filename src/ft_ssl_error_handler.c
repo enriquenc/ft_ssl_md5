@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:24 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/24 00:21:03 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/04/18 18:25:33 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,22 @@ static void	print_valid_commands(void)
 
 	i = 0;
 	ft_printf("Message Digest commands:\n");
-	while (i < ALGORITHM_AMOUNT)
-		ft_printf("%s\n", g_algorithms[i++].name);
+	while (i < ALGORITHM_AMOUNT) {
+		ft_printf("%s\n", g_algorithms[i].name);
+		i++;
+	}
+}
+
+static void print_valid_options(void)
+{
+	int i;
+
+	i = 0;
+	ft_printf("Flags:\n");
+	while (i < FLAGS_AMOUNT) {
+		ft_printf("-%c\t%s\n", g_flags[i].name, g_flags[i].description);
+		i++;
+	}
 }
 
 void	ft_ssl_error(t_error code, void *arg)
@@ -33,7 +47,10 @@ void	ft_ssl_error(t_error code, void *arg)
 		print_valid_commands();
 	}
 	else if (code == INVALID_OPTION)
-		ft_printf("ft_ssl: Unknown option '%s'\n", (char *)arg);
+	{
+		ft_printf("ft_ssl: Unknown option '%s'\n\n", (char *)arg);
+		print_valid_options();
+	}
 	else if (code == EXPECTED_ARGUMENT)
 		ft_printf("ft_ssl: Expected argument after -s.\n");
 	exit(0);

@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/28 00:00:58 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/04/18 18:05:29 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@ t_algorithm g_algorithms[ALGORITHM_AMOUNT] = {
 	{.name = "sha384", .hash_function = sha384, .hash_size_bytes = 384 / 8}
 };
 
+t_flag g_flags[FLAGS_AMOUNT] = {
+	{.name = 'p', .mask = FLAG_P, .description = "echo STDIN to STDOUT and append the checksum to STDOUT"},
+	{.name = 'q', .mask = FLAG_Q, .description = "quiet mode"},
+	{.name = 'r', .mask = FLAG_R, .description = "reverse the format of the output"},
+	{.name = 's', .mask = FLAG_S, .description = "print the sum of the given string"}
+};
 
 static t_algorithm		parser_algorithm_get(char *command)
 {
@@ -41,18 +47,31 @@ static t_algorithm		parser_algorithm_get(char *command)
 static void				parser_options(t_parser_data *parsed_data,
 											char *current_arg)
 {
-	if (current_arg[1] == 'p')
-		parsed_data->options |= FLAG_P;
-	else if (current_arg[1] == 'q')
-		parsed_data->options |= FLAG_Q;
-	else if (current_arg[1] == 'r')
-		parsed_data->options |= FLAG_R;
-	else if (current_arg[1] == 's')
-		parsed_data->options |= FLAG_S;
-	else
-		ft_ssl_error(INVALID_OPTION, current_arg + 1);
-	if (current_arg[2] != '\0')
-		ft_ssl_error(INVALID_OPTION, current_arg + 1);
+	uint8_t i;
+	uint8_t symbol_inputed;
+
+	/**
+	 * @brief skip '-' symbol.
+	 */
+	symbol_inputed = *(current_arg + 1);
+
+	i = 0;
+	while (i < FLAGS_AMOUNT)
+	{
+		if (symbol_inputed == g_flags[i].name) {
+			parsed_data->options |= g_flags[i].mask;
+			/**
+			 * @brief check correctness of end of the argument.
+			 */
+			symbol_inputed = *(current_arg + 2);
+			if (symbol_inputed != '\0') {
+				ft_ssl_error(INVALID_OPTION, current_arg + 1);
+			}
+			return ;
+		}
+		i++;
+	}
+	ft_ssl_error(INVALID_OPTION, current_arg + 1);
 }
 
 static void				parser_files(t_parser_data *parsed_data,
