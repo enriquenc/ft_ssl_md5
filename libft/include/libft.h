@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/20 20:43:17 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/27 23:56:14 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/04/20 23:07:17 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 #ifdef __linux__
 typedef u_int8_t uint8_t;
+typedef __uint16_t uint16_t;
 typedef u_int32_t uint32_t;
 typedef u_int64_t uint64_t;
 typedef __int128_t uint128_t;

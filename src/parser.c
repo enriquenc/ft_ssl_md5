@@ -6,25 +6,36 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:52:47 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/04/18 18:05:29 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/04/20 23:23:34 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <parser.h>
 
 t_algorithm g_algorithms[ALGORITHM_AMOUNT] = {
-	{.name = "md5", .hash_function = md5, .hash_size_bytes = 16},
-	{.name = "sha256", .hash_function = sha256, .hash_size_bytes = 256 / 8},
-	{.name = "sha224", .hash_function = sha224, .hash_size_bytes = 224 / 8},
-	{.name = "sha512", .hash_function = sha512, .hash_size_bytes = 512 / 8},
-	{.name = "sha384", .hash_function = sha384, .hash_size_bytes = 384 / 8}
+#define DECLARE_COMMAND(_name, _func, _size, _opt_mask) {\
+		.name = _name, \
+		.hash_function = _func, \
+		.hash_size_bytes = _size, \
+		.options_mask = _opt_mask }
+
+	DECLARE_COMMAND("md5", md5, 16, (FLAG_P | FLAG_Q | FLAG_R | FLAG_S)),
+	DECLARE_COMMAND("sha256", sha256, 256 / 8, (FLAG_P | FLAG_Q | FLAG_R | FLAG_S)),
+	DECLARE_COMMAND("sha224", sha224, 224 / 8, (FLAG_P | FLAG_Q | FLAG_R | FLAG_S)),
+	DECLARE_COMMAND("sha512", sha512, 512 / 8, (FLAG_P | FLAG_Q | FLAG_R | FLAG_S)),
+	DECLARE_COMMAND("sha384", sha384, 384 / 8, (FLAG_P | FLAG_Q | FLAG_R | FLAG_S))
 };
 
 t_flag g_flags[FLAGS_AMOUNT] = {
-	{.name = 'p', .mask = FLAG_P, .description = "echo STDIN to STDOUT and append the checksum to STDOUT"},
-	{.name = 'q', .mask = FLAG_Q, .description = "quiet mode"},
-	{.name = 'r', .mask = FLAG_R, .description = "reverse the format of the output"},
-	{.name = 's', .mask = FLAG_S, .description = "print the sum of the given string"}
+#define DECLARE_FLAG(_name, _mask, _description) {\
+	.name = _name, \
+	.mask = _mask, \
+	.description = _description}
+
+	DECLARE_FLAG('p', FLAG_P, "echo STDIN to STDOUT and append the checksum to STDOUT"),
+	DECLARE_FLAG('q', FLAG_Q, "quiet mode"),
+	DECLARE_FLAG('r', FLAG_R, "reverse the format of the output"),
+	DECLARE_FLAG('s', FLAG_S, "print the sum of the given string")
 };
 
 static t_algorithm		parser_algorithm_get(char *command)

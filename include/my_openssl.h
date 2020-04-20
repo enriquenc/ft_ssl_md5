@@ -6,7 +6,7 @@
 /*   By: tmaslyan <tmaslyan@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/07 14:35:49 by tmaslyan          #+#    #+#             */
-/*   Updated: 2020/03/28 00:24:28 by tmaslyan         ###   ########.fr       */
+/*   Updated: 2020/04/20 23:44:30 by tmaslyan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ typedef struct	s_algorithm {
 	char				name[24]; /* name of algorithm */
 	t_hash_func			hash_function; /* pointer to the appropriate hash function */
 	uint8_t				hash_size_bytes; /* size of result hash in bytes */
+	uint16_t			options_mask; /* bit field with algorithm options */
 }				t_algorithm;
 
 /**
