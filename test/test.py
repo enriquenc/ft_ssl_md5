@@ -31,6 +31,8 @@ for i in range(len(files_array)):
 	org = 'openssl md5 ' + files_array[i]
 	hashed_files_array.append(subprocess.run(org.split(), stdout=subprocess.PIPE).stdout.decode('utf-8').split()[-1])
 
+#Test string for hash algorithms testing
+test_string = "test string"
 
 class TestAll(unittest.TestCase):
 	def test_flags_p(self):
@@ -176,6 +178,66 @@ class TestAll(unittest.TestCase):
 		actual = subprocess.Popen(my.split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 		actual = actual.communicate(stdin_data.encode('utf-8'))[0].decode('utf-8')
 
+		self.assertEqual(expected, actual)
+
+	def test_md5(self):
+		algorithm_name = 'md5'
+		my = './ft_ssl ' + algorithm_name
+		org = 'openssl ' + algorithm_name
+		expected = algorithm_name + ' (stdin) = '
+		actual = subprocess.Popen(org.split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		expected = expected + actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8').split()[-1] + '\n'
+
+		actual = subprocess.Popen(my.split(),  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		actual = actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8')
+		self.assertEqual(expected, actual)
+
+	def test_sha224(self):
+		algorithm_name = 'sha512'
+		my = './ft_ssl ' + algorithm_name
+		org = 'openssl ' + algorithm_name
+		expected = algorithm_name + ' (stdin) = '
+		actual = subprocess.Popen(org.split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		expected = expected + actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8').split()[-1] + '\n'
+
+		actual = subprocess.Popen(my.split(),  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		actual = actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8')
+		self.assertEqual(expected, actual)
+
+	def test_sha256(self):
+		algorithm_name = 'sha256'
+		my = './ft_ssl ' + algorithm_name
+		org = 'openssl ' + algorithm_name
+		expected = algorithm_name + ' (stdin) = '
+		actual = subprocess.Popen(org.split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		expected = expected + actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8').split()[-1] + '\n'
+
+		actual = subprocess.Popen(my.split(),  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		actual = actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8')
+		self.assertEqual(expected, actual)
+
+	def test_sha384(self):
+		algorithm_name = 'sha384'
+		my = './ft_ssl ' + algorithm_name
+		org = 'openssl ' + algorithm_name
+		expected = algorithm_name + ' (stdin) = '
+		actual = subprocess.Popen(org.split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		expected = expected + actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8').split()[-1] + '\n'
+
+		actual = subprocess.Popen(my.split(),  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		actual = actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8')
+		self.assertEqual(expected, actual)
+
+	def test_sha512(self):
+		algorithm_name = 'sha512'
+		my = './ft_ssl ' + algorithm_name
+		org = 'openssl ' + algorithm_name
+		expected = algorithm_name + ' (stdin) = '
+		actual = subprocess.Popen(org.split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		expected = expected + actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8').split()[-1] + '\n'
+
+		actual = subprocess.Popen(my.split(),  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		actual = actual.communicate(test_string.encode('utf-8'))[0].decode('utf-8')
 		self.assertEqual(expected, actual)
 
 
